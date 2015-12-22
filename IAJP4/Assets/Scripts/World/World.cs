@@ -6,7 +6,6 @@ public class World : MonoBehaviour {
 
     [SerializeField]private int sizeX = 50;
     [SerializeField]private int sizeY = 50;
-    [SerializeField]private float sizeCell = .5f;
     [SerializeField]private float spacing = 4;
     [SerializeField]private bool debug = true;
 
@@ -103,7 +102,7 @@ public class World : MonoBehaviour {
             }
             Gizmos.DrawCube(new Vector3(i / sizeX * spacing, i % 50 * spacing, 0) - new Vector3(spacing * sizeX / 2, spacing * sizeY / 2,0) 
                 + new Vector3(spacing / 2, spacing / 2, 0)
-                , new Vector3(sizeCell, sizeCell, 1));
+                , new Vector3(.5f, .5f, 1));
         }
     }
 
