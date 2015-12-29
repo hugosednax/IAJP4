@@ -4,14 +4,16 @@ using System.Collections.Generic;
 
 public class World : MonoBehaviour {
 
-    [SerializeField]private int sizeX = 50;
-    [SerializeField]private int sizeY = 50;
+    [SerializeField]private int sizeX = 10;
+    [SerializeField]private int sizeY = 10;
     [SerializeField]private float spacing = 4;
     [SerializeField]private bool debug = true;
 
 
-    enum typeOfCell { normal, trap, plant };
+    public enum typeOfCell { obstacle, normal, trap, plant, hunter, fugitive };
     List<typeOfCell> world;
+    Hunter hunter;
+    Prey prey;
 
 	// Use this for initialization
 	void Start () {
@@ -33,7 +35,7 @@ public class World : MonoBehaviour {
             Vector3 pos;
             for (int i = 0; i < sizeX * sizeY; i++)
             {
-                pos = new Vector3(i / sizeX * spacing, i % 50 * spacing, 0) - new Vector3(spacing * sizeX / 2, spacing * sizeY / 2, 0) + new Vector3(spacing / 2, spacing / 2, 0);
+                pos = new Vector3(i / sizeX * spacing, i % sizeX * spacing, 0) - new Vector3(spacing * sizeX / 2, spacing * sizeY / 2, 0) + new Vector3(spacing / 2, spacing / 2, 0);
                 GameObject instancedQuad = (GameObject) Instantiate(quad, pos, quad.transform.rotation);
                 instancedQuad.transform.localScale = new Vector3(spacing,spacing,1);
                 instancedQuad.transform.parent = transform;
@@ -41,14 +43,34 @@ public class World : MonoBehaviour {
             Debug.Log("World is now generated");
         }
 
+
+        int hunterX = 0;
+        int hunterY = 0;
+
+        int fugitiveX = 0;
+        int fugitiveY = 0;
+
+        while (hunterX == fugitiveX && hunterY == fugitiveY)
+        {
+            hunterX = Random.Range(0, sizeX - 1);
+            hunterY = Random.Range(0, sizeY - 1);
+            fugitiveX = Random.Range(0, sizeX - 1);
+            fugitiveY = Random.Range(0, sizeY - 1);
+        }
+        hunter = new Hunter(hunterX, hunterY);
+        SetTypeOfCell(hunterX, hunterY, typeOfCell.hunter);
+        prey = new Prey(fugitiveX, fugitiveY);
+        SetTypeOfCell(fugitiveX, fugitiveY, typeOfCell.fugitive);
     }
 	
-    typeOfCell GetTypeOfCell (int i, int j)
+    public typeOfCell GetTypeOfCell (int i, int j)
     {
+        if (i < 0 || j < 0 || i > sizeX || j > sizeY)
+            return typeOfCell.obstacle;
         return world[sizeX*i + j];
     }
 
-    typeOfCell GetTypeOfCell(int i)
+    public typeOfCell GetTypeOfCell(int i)
     {
         return world[i];
     }
@@ -70,7 +92,7 @@ public class World : MonoBehaviour {
 
     Vector3 CellToWorld(int i)
     {
-        return new Vector3(i / sizeX * spacing, i % 50 * spacing, -10) - new Vector3(sizeX / 2, sizeY / 2, 0);
+        return new Vector3(i / sizeX * spacing, i % sizeX * spacing, -10) - new Vector3(sizeX / 2, sizeY / 2, 0);
     }
 
     int WorldToCell(Vector3 location)
@@ -100,9 +122,9 @@ public class World : MonoBehaviour {
             {
                 Gizmos.color = Color.red;
             }
-            Gizmos.DrawCube(new Vector3(i / sizeX * spacing, i % 50 * spacing, 0) - new Vector3(spacing * sizeX / 2, spacing * sizeY / 2,0) 
+            Gizmos.DrawCube(new Vector3(i / sizeX * spacing, i % sizeX * spacing, 0) - new Vector3(spacing * sizeX / 2, spacing * sizeY / 2,0) 
                 + new Vector3(spacing / 2, spacing / 2, 0)
-                , new Vector3(.5f, .5f, 1));
+                , new Vector3(spacing, spacing, 1));
         }
     }
 
@@ -122,5 +144,20 @@ public class World : MonoBehaviour {
             }
 
         }
+    }
+
+    public void MoveActor(Actor actor, int offsetX, int offsetY)
+    {
+        if (actor.type == Actor.typeofActor.hunter)
+        {
+            SetTypeOfCell(hunter.PosX, hunter.PosY, typeOfCell.normal);
+            SetTypeOfCell(hunter.PosX + offsetX, hunter.PosY + offsetY, typeOfCell.hunter);
+        }
+        else if (actor.type == Actor.typeofActor.fugitive)
+        {
+            SetTypeOfCell(prey.PosX, prey.PosY, typeOfCell.normal);
+            SetTypeOfCell(prey.PosX + offsetX, prey.PosY + offsetY, typeOfCell.fugitive);
+        }
+        else Debug.Log("Move Unknown Actor: " + actor.type);
     }
 }

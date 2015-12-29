@@ -3,14 +3,9 @@ using System.Collections;
 
 public class Prey : Actor {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    public Prey(int posX, int posY)
+        : base(posX, posY, Actor.typeofActor.fugitive)
+    {
 
+    }
 }
