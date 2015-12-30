@@ -9,7 +9,7 @@ public class World : MonoBehaviour {
     [SerializeField]private float spacing = 4;
     [SerializeField]private bool debug = true;
 
-
+    public const int SPRINT_LENGTH = 2;
     public enum typeOfCell { obstacle, normal, trap, plant, hunter, fugitive };
     List<typeOfCell> world;
     Hunter hunter;
@@ -142,22 +142,125 @@ public class World : MonoBehaviour {
                 //Debug.Log(hit.point);
                 //Debug.Log(WorldToCellMatrixIndex(hit.point));
             }
-
         }
+        if (Input.GetKeyUp(KeyCode.A))
+            MoveActor(hunter, -1, 0);
+
+        //GAME CYCLE
+        while (hunter.Energy > 0 && prey.Energy > 0)
+        {
+            Turn(prey);
+            Turn(hunter);
+        }
+    }
+
+    private void Turn(Actor actor)
+    {
+        //TODO
     }
 
     public void MoveActor(Actor actor, int offsetX, int offsetY)
     {
+        int offset = offsetX == 0 ? 0 : (offsetX > 0 ? 1 : -1);
+
+        for (int i = 0; i < Mathf.Abs(offsetX); i++)
+        {
+            if (actor.type == Actor.typeofActor.hunter)
+            {
+                HandleCollision(hunter, hunter.PosX + offset, hunter.PosY);
+                SetTypeOfCell(hunter.PosX, hunter.PosY, typeOfCell.normal);
+                SetTypeOfCell(hunter.PosX + offset, hunter.PosY, typeOfCell.hunter);
+                hunter.PosX += offset;
+            }
+            else if (actor.type == Actor.typeofActor.fugitive)
+            {
+                HandleCollision(prey, prey.PosX + offset, prey.PosY);
+                SetTypeOfCell(prey.PosX, prey.PosY, typeOfCell.normal);
+                SetTypeOfCell(prey.PosX + offset, prey.PosY, typeOfCell.fugitive);
+                prey.PosX += offset;
+            }
+            else Debug.Log("Move Unknown Actor: " + actor.type);
+        }
+
+        offset = offsetY == 0 ? 0 : (offsetY > 0 ? 1 : -1);
+
+        for (int i = 0; i < Mathf.Abs(offsetY); i++)
+        {
+            if (actor.type == Actor.typeofActor.hunter)
+            {
+                HandleCollision(hunter, hunter.PosX, hunter.PosY + offset);
+                SetTypeOfCell(hunter.PosX, hunter.PosY, typeOfCell.normal);
+                SetTypeOfCell(hunter.PosX, hunter.PosY + offset, typeOfCell.hunter);
+                hunter.PosY += offset;
+            }
+            else if (actor.type == Actor.typeofActor.fugitive)
+            {
+                HandleCollision(prey, prey.PosX, prey.PosY + offset);
+                SetTypeOfCell(prey.PosX, prey.PosY, typeOfCell.normal);
+                SetTypeOfCell(prey.PosX, prey.PosY + offset, typeOfCell.fugitive);
+                prey.PosY += offset;
+            }
+            else Debug.Log("Move Unknown Actor: " + actor.type);
+        }
+    }
+
+    private void HandleCollision(Actor actor, int posX, int posY)
+    {
+        typeOfCell typeCell = GetTypeOfCell(posX, posY);
+
         if (actor.type == Actor.typeofActor.hunter)
         {
-            SetTypeOfCell(hunter.PosX, hunter.PosY, typeOfCell.normal);
-            SetTypeOfCell(hunter.PosX + offsetX, hunter.PosY + offsetY, typeOfCell.hunter);
+            if (typeCell == typeOfCell.fugitive)
+            {
+                prey.Energy = -999;
+            }
+            else if(typeCell == typeOfCell.hunter)
+            {
+                Debug.Log("[BUG]Two hunters ingame!!");
+            }
+            else if (typeCell == typeOfCell.normal)
+            {
+                //ignore
+            }
+            else if (typeCell == typeOfCell.obstacle)
+            {
+                Debug.Log("[BUG]Moving through an obstacle!!");
+            }
+            else if (typeCell == typeOfCell.plant)
+            {
+                hunter.Energy += 1;
+            }
+            else if (typeCell == typeOfCell.trap)
+            {
+                hunter.Energy = -999;
+            }
         }
-        else if (actor.type == Actor.typeofActor.fugitive)
+        else if(actor.type == Actor.typeofActor.hunter)
         {
-            SetTypeOfCell(prey.PosX, prey.PosY, typeOfCell.normal);
-            SetTypeOfCell(prey.PosX + offsetX, prey.PosY + offsetY, typeOfCell.fugitive);
+            if (typeCell == typeOfCell.fugitive)
+            {
+                Debug.Log("[BUG]Two preys ingame!!");
+            }
+            else if (typeCell == typeOfCell.hunter)
+            {
+                prey.Energy = -999;
+            }
+            else if (typeCell == typeOfCell.normal)
+            {
+                //ignore
+            }
+            else if (typeCell == typeOfCell.obstacle)
+            {
+                Debug.Log("[BUG]Moving through an obstacle!!");
+            }
+            else if (typeCell == typeOfCell.plant)
+            {
+                prey.Energy += 3;
+            }
+            else if (typeCell == typeOfCell.trap)
+            {
+                prey.Energy = -999;
+            }
         }
-        else Debug.Log("Move Unknown Actor: " + actor.type);
     }
 }

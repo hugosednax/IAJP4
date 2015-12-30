@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public abstract class Actor {
 
@@ -10,6 +11,7 @@ public abstract class Actor {
     public int PosY { get; set; }
     public enum typeofActor { hunter, fugitive };
     public typeofActor type { private set; get; }
+    public List<Action> Actions { protected set; get; }
 
     public Actor(int posX, int posY, typeofActor type )
     {
@@ -22,4 +24,6 @@ public abstract class Actor {
     {
         energy = 0;
     }
+
 }
+
