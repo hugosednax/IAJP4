@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class World : MonoBehaviour {
 
@@ -10,13 +11,20 @@ public class World : MonoBehaviour {
     [SerializeField]private bool debug = true;
 
     public const int SPRINT_LENGTH = 2;
-    public enum typeOfCell { obstacle, normal, trap, plant, hunter, fugitive };
+    public enum typeOfCell { obstacle, normal, trap, plant, hunter, prey };
     List<typeOfCell> world;
     Hunter hunter;
     Prey prey;
+    int turn = 0;
+
+    Text hunterEnergy;
+    Text preyEnergy;
+    float elapsedTime = 0f;
 
 	// Use this for initialization
 	void Start () {
+        hunterEnergy = GameObject.Find("HunterEnergy").GetComponent<Text>();
+        preyEnergy = GameObject.Find("PreyEnergy").GetComponent<Text>();
         world = new List<typeOfCell>();
         for(int i = 0; i < sizeX * sizeY; i++)
         {
@@ -60,12 +68,12 @@ public class World : MonoBehaviour {
         hunter = new Hunter(hunterX, hunterY);
         SetTypeOfCell(hunterX, hunterY, typeOfCell.hunter);
         prey = new Prey(fugitiveX, fugitiveY);
-        SetTypeOfCell(fugitiveX, fugitiveY, typeOfCell.fugitive);
+        SetTypeOfCell(fugitiveX, fugitiveY, typeOfCell.prey);
     }
 	
     public typeOfCell GetTypeOfCell (int i, int j)
     {
-        if (i < 0 || j < 0 || i > sizeX || j > sizeY)
+        if (i < 0 || j < 0 || i > sizeX - 1 || j > sizeY - 1)
             return typeOfCell.obstacle;
         return world[sizeX*i + j];
     }
@@ -118,9 +126,25 @@ public class World : MonoBehaviour {
             {
                 Gizmos.color = Color.green;
             }
-            else //IT'S A TRAP!!
+            else if (GetTypeOfCell(i) == typeOfCell.hunter)
             {
-                Gizmos.color = Color.red;
+                Gizmos.color = Color.yellow;
+            }
+            else if (GetTypeOfCell(i) == typeOfCell.prey)
+            {
+                Gizmos.color = Color.white;
+            }
+            else if (GetTypeOfCell(i) == typeOfCell.obstacle)
+            {
+                Gizmos.color = Color.black;
+            }
+            else if (GetTypeOfCell(i) == typeOfCell.trap)
+            {
+                Gizmos.color = Color.cyan;
+            }
+            else
+            {
+                Gizmos.color = Color.gray;
             }
             Gizmos.DrawCube(new Vector3(i / sizeX * spacing, i % sizeX * spacing, 0) - new Vector3(spacing * sizeX / 2, spacing * sizeY / 2,0) 
                 + new Vector3(spacing / 2, spacing / 2, 0)
@@ -132,6 +156,7 @@ public class World : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
+        elapsedTime += Time.deltaTime;
         if (Input.GetMouseButtonDown(0) && debug)
         {
             RaycastHit hit;
@@ -147,16 +172,40 @@ public class World : MonoBehaviour {
             MoveActor(hunter, -1, 0);
 
         //GAME CYCLE
-        while (hunter.Energy > 0 && prey.Energy > 0)
+        if (elapsedTime > 0.5f)
         {
-            Turn(prey);
-            Turn(hunter);
+            elapsedTime = 0f;
+            if (hunter.Energy > 0 && prey.Energy > 0)
+            {
+                if (turn == 0)
+                    Turn(prey);
+                else Turn(hunter);
+                turn = (turn + 1) % 2;
+                hunterEnergy.text = "Hunter Energy: " + hunter.Energy;
+                preyEnergy.text = "Prey Energy: " + prey.Energy;
+            }
+            else
+            {
+                string winner = "None";
+                if (hunter.Energy > 0)
+                    winner = "Hunter";
+                else winner = "Prey;";
+                Debug.Log("Game Over. Winner: " + winner);
+            } 
         }
     }
 
     private void Turn(Actor actor)
     {
-        //TODO
+        List<Action> actions = actor.Actions;
+        bool isValid = false;
+
+        while(!isValid){
+            int randIndex = Random.Range(0, actions.Count - 1);
+            isValid = actions[randIndex].CanExecute(this);
+            if (isValid)
+                actions[randIndex].Execute(this);
+        }
     }
 
     public void MoveActor(Actor actor, int offsetX, int offsetY)
@@ -165,6 +214,7 @@ public class World : MonoBehaviour {
 
         for (int i = 0; i < Mathf.Abs(offsetX); i++)
         {
+            actor.Energy--;
             if (actor.type == Actor.typeofActor.hunter)
             {
                 HandleCollision(hunter, hunter.PosX + offset, hunter.PosY);
@@ -172,11 +222,11 @@ public class World : MonoBehaviour {
                 SetTypeOfCell(hunter.PosX + offset, hunter.PosY, typeOfCell.hunter);
                 hunter.PosX += offset;
             }
-            else if (actor.type == Actor.typeofActor.fugitive)
+            else if (actor.type == Actor.typeofActor.prey)
             {
                 HandleCollision(prey, prey.PosX + offset, prey.PosY);
                 SetTypeOfCell(prey.PosX, prey.PosY, typeOfCell.normal);
-                SetTypeOfCell(prey.PosX + offset, prey.PosY, typeOfCell.fugitive);
+                SetTypeOfCell(prey.PosX + offset, prey.PosY, typeOfCell.prey);
                 prey.PosX += offset;
             }
             else Debug.Log("Move Unknown Actor: " + actor.type);
@@ -186,6 +236,7 @@ public class World : MonoBehaviour {
 
         for (int i = 0; i < Mathf.Abs(offsetY); i++)
         {
+            actor.Energy--;
             if (actor.type == Actor.typeofActor.hunter)
             {
                 HandleCollision(hunter, hunter.PosX, hunter.PosY + offset);
@@ -193,11 +244,11 @@ public class World : MonoBehaviour {
                 SetTypeOfCell(hunter.PosX, hunter.PosY + offset, typeOfCell.hunter);
                 hunter.PosY += offset;
             }
-            else if (actor.type == Actor.typeofActor.fugitive)
+            else if (actor.type == Actor.typeofActor.prey)
             {
                 HandleCollision(prey, prey.PosX, prey.PosY + offset);
                 SetTypeOfCell(prey.PosX, prey.PosY, typeOfCell.normal);
-                SetTypeOfCell(prey.PosX, prey.PosY + offset, typeOfCell.fugitive);
+                SetTypeOfCell(prey.PosX, prey.PosY + offset, typeOfCell.prey);
                 prey.PosY += offset;
             }
             else Debug.Log("Move Unknown Actor: " + actor.type);
@@ -210,9 +261,10 @@ public class World : MonoBehaviour {
 
         if (actor.type == Actor.typeofActor.hunter)
         {
-            if (typeCell == typeOfCell.fugitive)
+            if (typeCell == typeOfCell.prey)
             {
                 prey.Energy = -999;
+                //Debug.Log("Hunter in Prey");
             }
             else if(typeCell == typeOfCell.hunter)
             {
@@ -220,46 +272,51 @@ public class World : MonoBehaviour {
             }
             else if (typeCell == typeOfCell.normal)
             {
-                //ignore
+                //Debug.Log("Hunter in normal");
             }
             else if (typeCell == typeOfCell.obstacle)
             {
-                Debug.Log("[BUG]Moving through an obstacle!!");
+                Debug.Log("[BUG]Hunter Moving through an obstacle!!");
             }
             else if (typeCell == typeOfCell.plant)
             {
                 hunter.Energy += 1;
+                //Debug.Log("Hunter in plant");
             }
             else if (typeCell == typeOfCell.trap)
             {
                 hunter.Energy = -999;
+                //Debug.Log("Hunter in trap");
             }
         }
-        else if(actor.type == Actor.typeofActor.hunter)
+        else if(actor.type == Actor.typeofActor.prey)
         {
-            if (typeCell == typeOfCell.fugitive)
+            if (typeCell == typeOfCell.prey)
             {
                 Debug.Log("[BUG]Two preys ingame!!");
             }
             else if (typeCell == typeOfCell.hunter)
             {
                 prey.Energy = -999;
+                //Debug.Log("Prey in Hunter");
             }
             else if (typeCell == typeOfCell.normal)
             {
-                //ignore
+                //Debug.Log("Prey in normal");
             }
             else if (typeCell == typeOfCell.obstacle)
             {
-                Debug.Log("[BUG]Moving through an obstacle!!");
+                Debug.Log("[BUG]Prey Moving through an obstacle!!");
             }
             else if (typeCell == typeOfCell.plant)
             {
                 prey.Energy += 3;
+                //Debug.Log("Prey in plant");
             }
             else if (typeCell == typeOfCell.trap)
             {
                 prey.Energy = -999;
+                //Debug.Log("Prey in trap");
             }
         }
     }

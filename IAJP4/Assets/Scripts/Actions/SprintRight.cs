@@ -7,7 +7,7 @@ public class SprintRight : Action {
 
     public override bool CanExecute(World world)
     {
-        for (int i = 0; i < World.SPRINT_LENGTH; i++)
+        for (int i = 1; i <= World.SPRINT_LENGTH; i++)
         {
             if (world.GetTypeOfCell(actor.PosX + i, actor.PosY) == World.typeOfCell.obstacle)
             {

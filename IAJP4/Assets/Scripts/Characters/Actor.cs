@@ -9,7 +9,7 @@ public abstract class Actor {
     public int Energy { get; set; }
     public int PosX { get; set; }
     public int PosY { get; set; }
-    public enum typeofActor { hunter, fugitive };
+    public enum typeofActor { hunter, prey };
     public typeofActor type { private set; get; }
     public List<Action> Actions { protected set; get; }
 
@@ -18,6 +18,7 @@ public abstract class Actor {
         this.PosX = posX;
         this.PosY = posY;
         this.type = type;
+        this.Energy = 100;
     }
 
     public void Death()

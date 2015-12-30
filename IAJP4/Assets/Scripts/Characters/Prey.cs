@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class Prey : Actor {
 
     public Prey(int posX, int posY)
-        : base(posX, posY, Actor.typeofActor.fugitive)
+        : base(posX, posY, Actor.typeofActor.prey)
     {
         Actions = new List<Action>();
         Actions.Add(new MoveDown(this));
