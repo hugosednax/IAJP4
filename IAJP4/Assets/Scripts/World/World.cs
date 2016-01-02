@@ -261,6 +261,68 @@ public class World : MonoBehaviour
         }
     }
 
+    Vector2 detectCellNearby(int x, int y, int distance, typeOfCell typeToDetect)
+    {
+        Vector2 cellNearby = new Vector2(0,0);
+
+        for(int i = x; i < x+distance; i++)
+        {
+            if (GetTypeOfCell(i, y) == typeToDetect)
+                cellNearby.x = 1;
+        }
+
+        for (int i = x; i < x - distance; i--)
+        {
+            if (GetTypeOfCell(i, y) == typeToDetect)
+                cellNearby.x = -1;
+        }
+
+        for (int i = y; i < y + distance; i++)
+        {
+            if (GetTypeOfCell(x, i) == typeToDetect)
+                cellNearby.y = 1;
+        }
+
+        for (int i = y; i < y - distance; i--)
+        {
+            if (GetTypeOfCell(x, i) == typeToDetect)
+                cellNearby.y = -1;
+        }
+
+        return cellNearby;
+    }
+
+    bool hasCellNearby(int x, int y, int distance, typeOfCell typeToDetect)
+    {
+        bool cellNearby = false;
+
+        for (int i = x; i < x + distance; i++)
+        {
+            if (GetTypeOfCell(i, y) == typeToDetect)
+                cellNearby = true;
+        }
+
+        for (int i = x; i < x - distance; i--)
+        {
+            if (GetTypeOfCell(i, y) == typeToDetect)
+                cellNearby = true;
+        }
+
+        for (int i = y; i < y + distance; i++)
+        {
+            if (GetTypeOfCell(x, i) == typeToDetect)
+                cellNearby = true;
+        }
+
+        for (int i = y; i < y - distance; i--)
+        {
+            if (GetTypeOfCell(x, i) == typeToDetect)
+                cellNearby = true;
+        }
+
+        return cellNearby;
+    }
+
     private void Turn(Actor actor)
     {
         List<Action> actions = actor.Actions;
