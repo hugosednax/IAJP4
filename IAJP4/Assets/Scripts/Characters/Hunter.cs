@@ -6,6 +6,7 @@ using WorldDefinition;
 
 public class Hunter : Actor
 {
+    World world;
     public Hunter(int posX, int posY)
         : base(posX, posY, Actor.typeofActor.hunter)
     {
@@ -25,7 +26,7 @@ public class Hunter : Actor
     {
             if (typeCell == typeOfCell.prey)
             {
-                Death(); // dont think this is right
+                world.killPrey();
             }
             else if (typeCell == typeOfCell.hunter)
             {
@@ -49,8 +50,4 @@ public class Hunter : Actor
             }
     }
 
-    public override void MoveActor(int offsetX, int offsetY)
-    {
-        throw new NotImplementedException();
-    }
 }

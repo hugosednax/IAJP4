@@ -43,26 +43,9 @@ public class World : MonoBehaviour
         {
             world.Add(typeOfCell.normal);
         }
-        if (this.GetComponent<Renderer>() != null)
-        {
-            Debug.Log("World script is attached to plane, changing sizes");
-            spacing = this.GetComponent<Renderer>().bounds.size.x / (float)sizeX;
-            Debug.Log("Spacing is now: " + spacing);
-        }
-        else
-        {
-            Debug.Log("World script is not attached to plane, generating world");
-            GameObject quad = (GameObject)Resources.Load("Quad");
-            Vector3 pos;
-            for (int i = 0; i < sizeX * sizeY; i++)
-            {
-                pos = new Vector3(i / sizeX * spacing, i % sizeX * spacing, 0) - new Vector3(spacing * sizeX / 2, spacing * sizeY / 2, 0) + new Vector3(spacing / 2, spacing / 2, 0);
-                GameObject instancedQuad = (GameObject)Instantiate(quad, pos, quad.transform.rotation);
-                instancedQuad.transform.localScale = new Vector3(spacing, spacing, 1);
-                instancedQuad.transform.parent = transform;
-            }
-            Debug.Log("World is now generated");
-        }
+        Debug.Log("World script is attached to plane, changing sizes");
+        spacing = this.GetComponent<Renderer>().bounds.size.x / (float)sizeX;
+        Debug.Log("Spacing is now: " + spacing);
 
         PopulateObstacles(1, 1);
         PopulateTraps(numberOfTraps);
@@ -335,5 +318,10 @@ public class World : MonoBehaviour
     {
         typeOfCell typeCell = GetTypeOfCell(posX, posY);
         actor.HandleCollision(typeCell);
+    }
+
+    public void killPrey()
+    {
+        prey.Death();
     }
 }

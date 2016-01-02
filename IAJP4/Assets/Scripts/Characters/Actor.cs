@@ -28,8 +28,6 @@ public abstract class Actor {
         Energy = -999;
     }
 
-    public abstract void MoveActor(int offsetX, int offsetY);
-
     public abstract void HandleCollision(typeOfCell typeOfCell);
 }
 

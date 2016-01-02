@@ -44,8 +44,4 @@ public class Prey : Actor {
             }
     }
 
-    public override void MoveActor(int offsetX, int offsetY)
-    {
-        throw new NotImplementedException();
-    }
 }
