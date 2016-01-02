@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using WorldDefinition;
 
 public class SprintDown : Action {
 
@@ -9,7 +10,7 @@ public class SprintDown : Action {
     {
         for (int i = 1; i <= World.SPRINT_LENGTH; i++)
         {
-            if (world.GetTypeOfCell(actor.PosX, actor.PosY + i) == World.typeOfCell.obstacle)
+            if (world.GetTypeOfCell(actor.PosX, actor.PosY + i) == typeOfCell.obstacle)
             {
                 return false;
             }

@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
+using WorldDefinition;
 
 public abstract class Actor {
 
     [SerializeField]protected int energy = 100;
 
-    public int Energy { get; set; }
+    public int Energy {
+        get { return energy; }
+        set { energy = value; }
+    }
     public int PosX { get; set; }
     public int PosY { get; set; }
     public enum typeofActor { hunter, prey };
@@ -18,13 +21,15 @@ public abstract class Actor {
         this.PosX = posX;
         this.PosY = posY;
         this.type = type;
-        this.Energy = 100;
     }
 
     public void Death()
     {
-        energy = 0;
+        Energy = -999;
     }
 
+    public abstract void MoveActor(int offsetX, int offsetY);
+
+    public abstract void HandleCollision(typeOfCell typeOfCell);
 }
 

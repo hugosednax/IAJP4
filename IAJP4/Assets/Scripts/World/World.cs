@@ -2,16 +2,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using WorldDefinition;
 
-public class World : MonoBehaviour {
+namespace WorldDefinition
+{
+    public enum typeOfCell { obstacle, normal, trap, plant, hunter, prey };
+}
 
-    [SerializeField]private int sizeX = 10;
-    [SerializeField]private int sizeY = 10;
-    [SerializeField]private float spacing = 4;
-    [SerializeField]private bool debug = true;
+public class World : MonoBehaviour
+{
+
+    [SerializeField]
+    private int sizeX = 15;
+    [SerializeField]
+    private int sizeY = 15;
+    [SerializeField]
+    private float spacing = 4;
+    [SerializeField]
+    private bool debug = true;
 
     public const int SPRINT_LENGTH = 2;
-    public enum typeOfCell { obstacle, normal, trap, plant, hunter, prey };
+    public int numberOfTraps = 5;
+    public int numberOfPlants = 3;
     List<typeOfCell> world;
     Hunter hunter;
     Prey prey;
@@ -21,12 +33,13 @@ public class World : MonoBehaviour {
     Text preyEnergy;
     float elapsedTime = 0f;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
         hunterEnergy = GameObject.Find("HunterEnergy").GetComponent<Text>();
         preyEnergy = GameObject.Find("PreyEnergy").GetComponent<Text>();
         world = new List<typeOfCell>();
-        for(int i = 0; i < sizeX * sizeY; i++)
+        for (int i = 0; i < sizeX * sizeY; i++)
         {
             world.Add(typeOfCell.normal);
         }
@@ -34,23 +47,26 @@ public class World : MonoBehaviour {
         {
             Debug.Log("World script is attached to plane, changing sizes");
             spacing = this.GetComponent<Renderer>().bounds.size.x / (float)sizeX;
-            Debug.Log("Spacing is now: "+ spacing);
+            Debug.Log("Spacing is now: " + spacing);
         }
         else
         {
-            Debug.Log("World script is attached to plane, generating world");
+            Debug.Log("World script is not attached to plane, generating world");
             GameObject quad = (GameObject)Resources.Load("Quad");
             Vector3 pos;
             for (int i = 0; i < sizeX * sizeY; i++)
             {
                 pos = new Vector3(i / sizeX * spacing, i % sizeX * spacing, 0) - new Vector3(spacing * sizeX / 2, spacing * sizeY / 2, 0) + new Vector3(spacing / 2, spacing / 2, 0);
-                GameObject instancedQuad = (GameObject) Instantiate(quad, pos, quad.transform.rotation);
-                instancedQuad.transform.localScale = new Vector3(spacing,spacing,1);
+                GameObject instancedQuad = (GameObject)Instantiate(quad, pos, quad.transform.rotation);
+                instancedQuad.transform.localScale = new Vector3(spacing, spacing, 1);
                 instancedQuad.transform.parent = transform;
             }
             Debug.Log("World is now generated");
         }
 
+        PopulateObstacles(1, 1);
+        PopulateTraps(numberOfTraps);
+        PopulatePlants(numberOfPlants);
 
         int hunterX = 0;
         int hunterY = 0;
@@ -58,24 +74,30 @@ public class World : MonoBehaviour {
         int fugitiveX = 0;
         int fugitiveY = 0;
 
-        while (hunterX == fugitiveX && hunterY == fugitiveY)
+        bool notPlaceable = (hunterX == fugitiveX && hunterY == fugitiveY) ||
+            GetTypeOfCell(hunterX, hunterY) != typeOfCell.normal ||
+            GetTypeOfCell(fugitiveX, fugitiveY) != typeOfCell.normal;
+        while (notPlaceable)
         {
             hunterX = Random.Range(0, sizeX - 1);
             hunterY = Random.Range(0, sizeY - 1);
             fugitiveX = Random.Range(0, sizeX - 1);
             fugitiveY = Random.Range(0, sizeY - 1);
+            notPlaceable = (hunterX == fugitiveX && hunterY == fugitiveY) ||
+                GetTypeOfCell(hunterX, hunterY) != typeOfCell.normal ||
+                GetTypeOfCell(fugitiveX, fugitiveY) != typeOfCell.normal;
         }
         hunter = new Hunter(hunterX, hunterY);
         SetTypeOfCell(hunterX, hunterY, typeOfCell.hunter);
         prey = new Prey(fugitiveX, fugitiveY);
         SetTypeOfCell(fugitiveX, fugitiveY, typeOfCell.prey);
     }
-	
-    public typeOfCell GetTypeOfCell (int i, int j)
+
+    public typeOfCell GetTypeOfCell(int i, int j)
     {
         if (i < 0 || j < 0 || i > sizeX - 1 || j > sizeY - 1)
             return typeOfCell.obstacle;
-        return world[sizeX*i + j];
+        return world[sizeX * i + j];
     }
 
     public typeOfCell GetTypeOfCell(int i)
@@ -105,12 +127,12 @@ public class World : MonoBehaviour {
 
     int WorldToCell(Vector3 location)
     {
-        return 0;
+        return 0; //not workerino
     }
 
     Vector2 WorldToCellMatrixIndex(Vector3 location)
     {
-        return new Vector2(0,0);
+        return new Vector2(0, 0);//not workerino
     }
 
     void OnDrawGizmos()
@@ -118,11 +140,11 @@ public class World : MonoBehaviour {
         if (!Application.isPlaying) return;
         for (int i = 0; i < sizeX * sizeY; i++)
         {
-            if(GetTypeOfCell(i) == typeOfCell.normal)
+            if (GetTypeOfCell(i) == typeOfCell.normal)
             {
-                Gizmos.color = Color.blue;
+                Gizmos.color = Color.gray;
             }
-            else if(GetTypeOfCell(i) == typeOfCell.plant)
+            else if (GetTypeOfCell(i) == typeOfCell.plant)
             {
                 Gizmos.color = Color.green;
             }
@@ -136,17 +158,17 @@ public class World : MonoBehaviour {
             }
             else if (GetTypeOfCell(i) == typeOfCell.obstacle)
             {
-                Gizmos.color = Color.black;
+                Gizmos.color = Color.blue;
             }
             else if (GetTypeOfCell(i) == typeOfCell.trap)
             {
-                Gizmos.color = Color.cyan;
+                Gizmos.color = Color.red;
             }
             else
             {
-                Gizmos.color = Color.gray;
+                Gizmos.color = Color.black; //wtf is this
             }
-            Gizmos.DrawCube(new Vector3(i / sizeX * spacing, i % sizeX * spacing, 0) - new Vector3(spacing * sizeX / 2, spacing * sizeY / 2,0) 
+            Gizmos.DrawCube(new Vector3(i / sizeX * spacing, i % sizeX * spacing, 0) - new Vector3(spacing * sizeX / 2, spacing * sizeY / 2, 0)
                 + new Vector3(spacing / 2, spacing / 2, 0)
                 , new Vector3(spacing, spacing, 1));
         }
@@ -155,7 +177,8 @@ public class World : MonoBehaviour {
     // location = i % 50 * spacing
 
     // Update is called once per frame
-    void Update () {
+    void Update()
+    {
         elapsedTime += Time.deltaTime;
         if (Input.GetMouseButtonDown(0) && debug)
         {
@@ -191,7 +214,67 @@ public class World : MonoBehaviour {
                     winner = "Hunter";
                 else winner = "Prey;";
                 Debug.Log("Game Over. Winner: " + winner);
-            } 
+            }
+        }
+    }
+
+    void PopulateObstacles(int nColumns, int nRows)
+    {
+
+        //column
+        for (int i = 0; i < nColumns; i++)
+        {
+            int x = Random.Range(1, sizeX - 2);
+            int y = Random.Range(0, sizeY - 1);
+
+            for (int j = 1; j < sizeY - 1; j++)
+            {
+                SetTypeOfCell(x, j, typeOfCell.obstacle);
+            }
+
+        }
+
+        //row
+        for (int i = 0; i < nRows; i++)
+        {
+            int x = Random.Range(0, sizeX - 1);
+            int y = Random.Range(1, sizeY - 2);
+
+            for (int j = 1; j < sizeX - 1; j++)
+            {
+                SetTypeOfCell(j, y, typeOfCell.obstacle);
+            }
+        }
+    }
+
+    void PopulateTraps(int nTraps)
+    {
+        for (int i = 0; i < nTraps; i++)
+        {
+            int selectedLocation = Random.Range(0, sizeX * sizeY - 1);
+            bool notPlaceable = GetTypeOfCell(selectedLocation) != typeOfCell.normal;
+            while (notPlaceable)
+            {
+                selectedLocation = Random.Range(0, sizeX * sizeY - 1);
+                notPlaceable = GetTypeOfCell(selectedLocation) != typeOfCell.normal;
+            }
+            //Debug.Log(selectedLocation);
+            SetTypeOfCell(selectedLocation, typeOfCell.trap);
+        }
+    }
+
+    void PopulatePlants(int nPlants)
+    {
+        for (int i = 0; i < nPlants; i++)
+        {
+            int selectedLocation = Random.Range(0, sizeX * sizeY - 1);
+            bool notPlaceable = GetTypeOfCell(selectedLocation) != typeOfCell.normal;
+            while (notPlaceable)
+            {
+                selectedLocation = Random.Range(0, sizeX * sizeY - 1);
+                notPlaceable = GetTypeOfCell(selectedLocation) != typeOfCell.normal;
+            }
+            SetTypeOfCell(selectedLocation, typeOfCell.plant);
         }
     }
 
@@ -200,7 +283,8 @@ public class World : MonoBehaviour {
         List<Action> actions = actor.Actions;
         bool isValid = false;
 
-        while(!isValid){
+        while (!isValid)
+        {
             int randIndex = Random.Range(0, actions.Count - 1);
             isValid = actions[randIndex].CanExecute(this);
             if (isValid)
@@ -215,21 +299,17 @@ public class World : MonoBehaviour {
         for (int i = 0; i < Mathf.Abs(offsetX); i++)
         {
             actor.Energy--;
+            HandleCollision(actor, actor.PosX + offset, actor.PosY);
+            SetTypeOfCell(actor.PosX, actor.PosY, typeOfCell.normal);
+
+            typeOfCell actorType;
             if (actor.type == Actor.typeofActor.hunter)
-            {
-                HandleCollision(hunter, hunter.PosX + offset, hunter.PosY);
-                SetTypeOfCell(hunter.PosX, hunter.PosY, typeOfCell.normal);
-                SetTypeOfCell(hunter.PosX + offset, hunter.PosY, typeOfCell.hunter);
-                hunter.PosX += offset;
-            }
-            else if (actor.type == Actor.typeofActor.prey)
-            {
-                HandleCollision(prey, prey.PosX + offset, prey.PosY);
-                SetTypeOfCell(prey.PosX, prey.PosY, typeOfCell.normal);
-                SetTypeOfCell(prey.PosX + offset, prey.PosY, typeOfCell.prey);
-                prey.PosX += offset;
-            }
-            else Debug.Log("Move Unknown Actor: " + actor.type);
+                actorType = typeOfCell.hunter;
+            else
+                actorType = typeOfCell.prey;
+
+            SetTypeOfCell(actor.PosX + offset, actor.PosY, actorType);
+            actor.PosX += offset;
         }
 
         offset = offsetY == 0 ? 0 : (offsetY > 0 ? 1 : -1);
@@ -237,87 +317,23 @@ public class World : MonoBehaviour {
         for (int i = 0; i < Mathf.Abs(offsetY); i++)
         {
             actor.Energy--;
+            HandleCollision(actor, actor.PosX, actor.PosY + offset);
+            SetTypeOfCell(actor.PosX, actor.PosY, typeOfCell.normal);
+
+            typeOfCell actorType;
             if (actor.type == Actor.typeofActor.hunter)
-            {
-                HandleCollision(hunter, hunter.PosX, hunter.PosY + offset);
-                SetTypeOfCell(hunter.PosX, hunter.PosY, typeOfCell.normal);
-                SetTypeOfCell(hunter.PosX, hunter.PosY + offset, typeOfCell.hunter);
-                hunter.PosY += offset;
-            }
-            else if (actor.type == Actor.typeofActor.prey)
-            {
-                HandleCollision(prey, prey.PosX, prey.PosY + offset);
-                SetTypeOfCell(prey.PosX, prey.PosY, typeOfCell.normal);
-                SetTypeOfCell(prey.PosX, prey.PosY + offset, typeOfCell.prey);
-                prey.PosY += offset;
-            }
-            else Debug.Log("Move Unknown Actor: " + actor.type);
+                actorType = typeOfCell.hunter;
+            else
+                actorType = typeOfCell.prey;
+
+            SetTypeOfCell(actor.PosX, actor.PosY + offset, actorType);
+            actor.PosY += offset;
         }
     }
 
     private void HandleCollision(Actor actor, int posX, int posY)
     {
         typeOfCell typeCell = GetTypeOfCell(posX, posY);
-
-        if (actor.type == Actor.typeofActor.hunter)
-        {
-            if (typeCell == typeOfCell.prey)
-            {
-                prey.Energy = -999;
-                //Debug.Log("Hunter in Prey");
-            }
-            else if(typeCell == typeOfCell.hunter)
-            {
-                Debug.Log("[BUG]Two hunters ingame!!");
-            }
-            else if (typeCell == typeOfCell.normal)
-            {
-                //Debug.Log("Hunter in normal");
-            }
-            else if (typeCell == typeOfCell.obstacle)
-            {
-                Debug.Log("[BUG]Hunter Moving through an obstacle!!");
-            }
-            else if (typeCell == typeOfCell.plant)
-            {
-                hunter.Energy += 1;
-                //Debug.Log("Hunter in plant");
-            }
-            else if (typeCell == typeOfCell.trap)
-            {
-                hunter.Energy = -999;
-                //Debug.Log("Hunter in trap");
-            }
-        }
-        else if(actor.type == Actor.typeofActor.prey)
-        {
-            if (typeCell == typeOfCell.prey)
-            {
-                Debug.Log("[BUG]Two preys ingame!!");
-            }
-            else if (typeCell == typeOfCell.hunter)
-            {
-                prey.Energy = -999;
-                //Debug.Log("Prey in Hunter");
-            }
-            else if (typeCell == typeOfCell.normal)
-            {
-                //Debug.Log("Prey in normal");
-            }
-            else if (typeCell == typeOfCell.obstacle)
-            {
-                Debug.Log("[BUG]Prey Moving through an obstacle!!");
-            }
-            else if (typeCell == typeOfCell.plant)
-            {
-                prey.Energy += 3;
-                //Debug.Log("Prey in plant");
-            }
-            else if (typeCell == typeOfCell.trap)
-            {
-                prey.Energy = -999;
-                //Debug.Log("Prey in trap");
-            }
-        }
+        actor.HandleCollision(typeCell);
     }
 }

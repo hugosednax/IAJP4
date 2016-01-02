@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using WorldDefinition;
 
 public class Rest : Action {
 

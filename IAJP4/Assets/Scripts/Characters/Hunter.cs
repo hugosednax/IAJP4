@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
+using WorldDefinition;
 
 public class Hunter : Actor
 {
@@ -17,5 +19,38 @@ public class Hunter : Actor
         Actions.Add(new SprintUp(this));
         Actions.Add(new SprintLeft(this));
         Actions.Add(new SprintRight(this));
+    }
+
+    public override void HandleCollision(typeOfCell typeCell)
+    {
+            if (typeCell == typeOfCell.prey)
+            {
+                Death(); // dont think this is right
+            }
+            else if (typeCell == typeOfCell.hunter)
+            {
+                Debug.Log("[BUG]Two hunters ingame!!");
+            }
+            else if (typeCell == typeOfCell.normal)
+            {
+                //Debug.Log("Hunter in normal");
+            }
+            else if (typeCell == typeOfCell.obstacle)
+            {
+                Debug.Log("[BUG]Hunter Moving through an obstacle!!");
+            }
+            else if (typeCell == typeOfCell.plant)
+            {
+                Energy += 1;
+            }
+            else if (typeCell == typeOfCell.trap)
+            {
+                Death();
+            }
+    }
+
+    public override void MoveActor(int offsetX, int offsetY)
+    {
+        throw new NotImplementedException();
     }
 }

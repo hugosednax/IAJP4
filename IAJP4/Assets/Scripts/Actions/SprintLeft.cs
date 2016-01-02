@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using WorldDefinition;
 
 public class SprintLeft : Action {
 
@@ -9,7 +10,7 @@ public class SprintLeft : Action {
     {
         for (int i = 1; i <= World.SPRINT_LENGTH; i++)
         {
-            if (world.GetTypeOfCell(actor.PosX - i, actor.PosY) == World.typeOfCell.obstacle)
+            if (world.GetTypeOfCell(actor.PosX - i, actor.PosY) == typeOfCell.obstacle)
             {
                 return false;
             }

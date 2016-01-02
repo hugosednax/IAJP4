@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using WorldDefinition;
 
 public class MoveRight : Action {
 
@@ -7,7 +8,7 @@ public class MoveRight : Action {
 
     public override bool CanExecute(World world)
     {
-        if (world.GetTypeOfCell(actor.PosX + 1, actor.PosY) == World.typeOfCell.obstacle)
+        if (world.GetTypeOfCell(actor.PosX + 1, actor.PosY) == typeOfCell.obstacle)
         {
             return false;
         }
