@@ -15,6 +15,19 @@ public class Prey : Actor {
         Actions.Add(new MoveLeft(this));
         Actions.Add(new MoveRight(this));
         Actions.Add(new Rest(this));
+
+        Dictionary<Action, float> startGeneVal = new Dictionary<Action, float>();
+        foreach (Action action in Actions)
+        {
+            startGeneVal.Add(action, 1.0f / Actions.Count);
+        }
+
+        Genes = new Dictionary<state, Dictionary<Action, float>>();
+        Genes.Add(state.nextToTrap, startGeneVal);
+        Genes.Add(state.nextToPlant, startGeneVal);
+        Genes.Add(state.nextToActor, startGeneVal);
+        Genes.Add(state.nextToObstacle, startGeneVal);
+        Genes.Add(state.emptySpace, startGeneVal);
     }
 
     public override void HandleCollision(typeOfCell typeCell)

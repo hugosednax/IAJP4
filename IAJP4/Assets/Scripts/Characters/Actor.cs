@@ -13,7 +13,9 @@ public abstract class Actor {
     public int PosX { get; set; }
     public int PosY { get; set; }
     public enum typeofActor { hunter, prey };
+    public enum state { nextToTrap, nextToPlant, nextToActor, nextToObstacle, emptySpace };
     public typeofActor type { private set; get; }
+    public Dictionary<state, Dictionary<Action, float>> Genes { get; set; }
     public List<Action> Actions { protected set; get; }
 
     public Actor(int posX, int posY, typeofActor type )

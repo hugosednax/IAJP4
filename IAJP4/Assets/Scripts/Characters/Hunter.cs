@@ -20,6 +20,19 @@ public class Hunter : Actor
         Actions.Add(new SprintUp(this));
         Actions.Add(new SprintLeft(this));
         Actions.Add(new SprintRight(this));
+
+        Dictionary<Action, float> startGeneVal = new Dictionary<Action, float>();
+        foreach(Action action in Actions)
+        {
+            startGeneVal.Add(action, 1.0f / Actions.Count);
+        }
+
+        Genes = new Dictionary<state, Dictionary<Action, float>>();
+        Genes.Add(state.nextToTrap, startGeneVal);
+        Genes.Add(state.nextToPlant, startGeneVal);
+        Genes.Add(state.nextToActor, startGeneVal);
+        Genes.Add(state.nextToObstacle, startGeneVal);
+        Genes.Add(state.emptySpace, startGeneVal);
     }
 
     public override void HandleCollision(typeOfCell typeCell)

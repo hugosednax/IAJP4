@@ -325,7 +325,7 @@ public class World : MonoBehaviour
 
     private void Turn(Actor actor)
     {
-        List<Action> actions = actor.Actions;
+        /*List<Action> actions = actor.Actions;
         bool isValid = false;
 
         while (!isValid)
@@ -334,7 +334,62 @@ public class World : MonoBehaviour
             isValid = actions[randIndex].CanExecute(this);
             if (isValid)
                 actions[randIndex].Execute(this);
+        }*/
+
+        bool isValid = false;
+        Actor.state state = chooseState(actor);
+        Dictionary<Action, float> gene = actor.Genes[state];
+
+        System.Random r = new System.Random();
+
+        while (!isValid)
+        {
+            float diceRoll = (float)r.NextDouble();
+            float cumulative = 0.0f;
+            foreach (Action action in actor.Actions)
+            {
+                cumulative += gene[action];
+                if(diceRoll < cumulative)
+                {
+                    isValid = action.CanExecute(this);
+                    if (isValid)
+                        action.Execute(this);
+                    break;
+                }
+            }
         }
+        
+
+    }
+
+    public Actor.state chooseState(Actor actor)
+    {
+
+        if (hasCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.hunter))
+        {
+            return Actor.state.nextToActor;
+        }
+        if (hasCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.trap))
+        {
+            return Actor.state.nextToTrap;
+        }
+        if (hasCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.prey))
+        {
+            return Actor.state.nextToActor;
+        }
+        if (hasCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.plant))
+        {
+            return Actor.state.nextToPlant;
+        }
+        if (hasCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.obstacle))
+        {
+            return Actor.state.nextToObstacle;
+        }
+        else
+        {
+            return Actor.state.emptySpace;
+        }
+
     }
 
     public void MoveActor(Actor actor, int offsetX, int offsetY)
