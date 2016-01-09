@@ -26,13 +26,6 @@ public class Hunter : Actor
         {
             startGeneVal.Add(action, 1.0f / Actions.Count);
         }
-
-        Genes = new Dictionary<state, Dictionary<Action, float>>();
-        Genes.Add(state.nextToTrap, startGeneVal);
-        Genes.Add(state.nextToPlant, startGeneVal);
-        Genes.Add(state.nextToActor, startGeneVal);
-        Genes.Add(state.nextToObstacle, startGeneVal);
-        Genes.Add(state.emptySpace, startGeneVal);
     }
 
     public override void HandleCollision(typeOfCell typeCell)

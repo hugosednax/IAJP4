@@ -177,6 +177,9 @@ public class World : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.A))
             MoveActor(hunter, -1, 0);
 
+        if (Input.GetKeyUp(KeyCode.L))
+            SaveResults(hunter);
+
         //GAME CYCLE
         if (elapsedTime > 0.5f)
         {
@@ -338,11 +341,11 @@ public class World : MonoBehaviour
 
         bool isValid = false;
         Actor.state state = chooseState(actor);
-        Dictionary<Action, float> gene = actor.Genes[state];
+        //Dictionary<Action, float> gene = actor.Genes[state];
 
         System.Random r = new System.Random();
 
-        while (!isValid)
+        /*while (!isValid)
         {
             float diceRoll = (float)r.NextDouble();
             float cumulative = 0.0f;
@@ -357,7 +360,7 @@ public class World : MonoBehaviour
                     break;
                 }
             }
-        }
+        }*/
         
 
     }
@@ -365,7 +368,7 @@ public class World : MonoBehaviour
     public Actor.state chooseState(Actor actor)
     {
 
-        if (hasCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.hunter))
+        /*if (hasCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.hunter))
         {
             return Actor.state.nextToActor;
         }
@@ -388,8 +391,8 @@ public class World : MonoBehaviour
         else
         {
             return Actor.state.emptySpace;
-        }
-
+        }*/
+        return Actor.state.enemyDown;
     }
 
     public void MoveActor(Actor actor, int offsetX, int offsetY)
@@ -440,5 +443,10 @@ public class World : MonoBehaviour
     public void killPrey()
     {
         prey.Death();
+    }
+
+    public void SaveResults(Actor actor)
+    {
+        System.IO.File.AppendAllText("../yourtextfile.txt", "This is text that goes into the text file");
     }
 }
