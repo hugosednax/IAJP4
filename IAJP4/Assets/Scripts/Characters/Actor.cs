@@ -21,12 +21,25 @@ public abstract class Actor {
     public Dictionary<byte[], Dictionary<Action, float>> Genes { get; set; }
     public List<Action> Actions { protected set; get; }
 
+    private byte[] currentState; // enemyD, enemyU, enemyL, enemyR, trapD, trapU, trapL, trapR, plantD, plantU, plantL, plantR
+
     public Actor(int posX, int posY, typeofActor type )
     {
         this.PosX = posX;
         this.PosY = posY;
         this.type = type;
         Genes = new Dictionary<byte[], Dictionary<Action, float>>(new BaComp());
+        //percisa de valores randomizados
+        currentState = new byte[12];
+    }
+
+    public Actor(int posX, int posY, typeofActor type, Dictionary<byte[], Dictionary<Action, float>> genesFromPappi)
+    {
+        this.PosX = posX;
+        this.PosY = posY;
+        this.type = type;
+        Genes = genesFromPappi;
+        currentState = new byte[12];
     }
 
     public void Death()

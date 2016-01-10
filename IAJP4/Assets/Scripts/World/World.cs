@@ -34,18 +34,25 @@ public class World : MonoBehaviour
     float elapsedTime = 0f;
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
         hunterEnergy = GameObject.Find("HunterEnergy").GetComponent<Text>();
         preyEnergy = GameObject.Find("PreyEnergy").GetComponent<Text>();
+    }
+
+    void Start()
+    {
+        ResetWorld();
+    }
+
+    public void ResetWorld()
+    {
         world = new List<typeOfCell>();
         for (int i = 0; i < sizeX * sizeY; i++)
         {
             world.Add(typeOfCell.normal);
         }
-        Debug.Log("World script is attached to plane, changing sizes");
         spacing = this.GetComponent<Renderer>().bounds.size.x / (float)sizeX;
-        Debug.Log("Spacing is now: " + spacing);
 
         PopulateObstacles(1, 1);
         PopulateTraps(numberOfTraps);
@@ -179,6 +186,9 @@ public class World : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.L))
             SaveResults(hunter);
+
+        if (Input.GetKeyUp(KeyCode.R))
+            ResetWorld();
 
         //GAME CYCLE
         if (elapsedTime > 0.5f)
@@ -340,12 +350,13 @@ public class World : MonoBehaviour
         }*/
 
         bool isValid = false;
-        Actor.state state = chooseState(actor);
-        //Dictionary<Action, float> gene = actor.Genes[state];
+        //Actor.state state = chooseState(actor);
+        byte[] state = chooseState(actor);
+        Dictionary<Action, float> gene = actor.Genes[state];
 
         System.Random r = new System.Random();
 
-        /*while (!isValid)
+        while (!isValid)
         {
             float diceRoll = (float)r.NextDouble();
             float cumulative = 0.0f;
@@ -360,39 +371,76 @@ public class World : MonoBehaviour
                     break;
                 }
             }
-        }*/
+        }
         
 
     }
 
-    public Actor.state chooseState(Actor actor)
+    public byte[] chooseState(Actor actor)
     {
-
-        /*if (hasCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.hunter))
+        byte[] states = new byte[12]; // 0 enemyD, 1 enemyU, 2 enemyL, 3 enemyR, 4 trapD, 5 trapU, 6 trapL, 7 trapR, 8 plantD, 9 plantU, 10 plantL, 11 plantR
+        for (int i = 0; i < states.Length; i++)
         {
-            return Actor.state.nextToActor;
+            states[i] = 0;
+        }
+        if (hasCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.hunter))
+        {
+            Vector2 positions = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.hunter);
+            if (positions.x == -1)
+                states[0] = 1;
+            else if (positions.x == 1)
+                states[1] = 1;
+
+            if (positions.y == -1)
+                states[2] = 1;
+            else if (positions.y == 1)
+                states[3] = 1;
         }
         if (hasCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.trap))
         {
-            return Actor.state.nextToTrap;
+            Vector2 positions = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.trap);
+            if (positions.x == -1)
+                states[4] = 1;
+            else if (positions.x == 1)
+                states[5] = 1;
+
+            if (positions.y == -1)
+                states[6] = 1;
+            else if (positions.y == 1)
+                states[7] = 1;
         }
         if (hasCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.prey))
         {
-            return Actor.state.nextToActor;
+            Vector2 positions = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.hunter);
+            if (positions.x == -1)
+                states[0] = 1;
+            else if (positions.x == 1)
+                states[1] = 1;
+
+            if (positions.y == -1)
+                states[2] = 1;
+            else if (positions.y == 1)
+                states[3] = 1;
         }
         if (hasCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.plant))
         {
-            return Actor.state.nextToPlant;
+            Vector2 positions = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.hunter);
+            if (positions.x == -1)
+                states[8] = 1;
+            else if (positions.x == 1)
+                states[9] = 1;
+
+            if (positions.y == -1)
+                states[10] = 1;
+            else if (positions.y == 1)
+                states[11] = 1;
         }
         if (hasCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.obstacle))
         {
-            return Actor.state.nextToObstacle;
+            
         }
-        else
-        {
-            return Actor.state.emptySpace;
-        }*/
-        return Actor.state.enemyDown;
+
+        return states;
     }
 
     public void MoveActor(Actor actor, int offsetX, int offsetY)
