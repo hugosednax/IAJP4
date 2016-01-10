@@ -5,6 +5,7 @@ using WorldDefinition;
 public abstract class Action {
 
     protected Actor actor;
+    public int Id { protected set; get; }
 
     public Action(Actor actor)
     {

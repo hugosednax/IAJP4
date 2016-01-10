@@ -6,8 +6,8 @@ using WorldDefinition;
 
 public class Prey : Actor {
 
-    public Prey(int posX, int posY)
-        : base(posX, posY, Actor.typeofActor.prey)
+    public Prey(int posX, int posY, World world)
+        : base(posX, posY, Actor.typeofActor.prey, world)
     {
         Actions = new List<Action>();
         Actions.Add(new MoveDown(this));
@@ -48,5 +48,15 @@ public class Prey : Actor {
                 Death();
             }
     }
+    public override void SaveResults(bool hasWon)
+    {
+        string toWrite = "";
+        for (int i = 0; i < statesOfThisGame.Count; i++)
+        {
+            toWrite += System.Text.Encoding.UTF8.GetString(statesOfThisGame[i].First);
+        }
+        toWrite += "|" + (hasWon ? "w" : "l") + "\n";
 
+        System.IO.File.AppendAllText("../prey.txt", toWrite);
+    }
 }

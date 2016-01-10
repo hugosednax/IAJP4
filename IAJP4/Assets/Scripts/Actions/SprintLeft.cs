@@ -4,7 +4,7 @@ using WorldDefinition;
 
 public class SprintLeft : Action {
 
-    public SprintLeft(Actor actor) : base(actor) { }
+    public SprintLeft(Actor actor) : base(actor) { Id = 6; }
 
     public override bool CanExecute(World world)
     {

@@ -4,7 +4,7 @@ using WorldDefinition;
 
 public class Rest : Action {
 
-    public Rest(Actor actor) : base(actor) { }
+    public Rest(Actor actor) : base(actor) { Id = 4; }
 
     public override bool CanExecute(World world)
     {

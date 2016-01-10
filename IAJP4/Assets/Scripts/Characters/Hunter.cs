@@ -6,9 +6,8 @@ using WorldDefinition;
 
 public class Hunter : Actor
 {
-    World world;
-    public Hunter(int posX, int posY)
-        : base(posX, posY, Actor.typeofActor.hunter)
+    public Hunter(int posX, int posY, World world)
+        : base(posX, posY, Actor.typeofActor.hunter, world)
     {
         Actions = new List<Action>();
         Actions.Add(new MoveDown(this));
@@ -56,4 +55,15 @@ public class Hunter : Actor
             }
     }
 
+    public override void SaveResults(bool hasWon)
+    {
+        string toWrite = "";
+        for (int i = 0; i < statesOfThisGame.Count; i++)
+        {
+            toWrite += System.Text.Encoding.UTF8.GetString(statesOfThisGame[i].First);
+        }
+        toWrite += "|" + (hasWon ? "w" : "l") + "\n";
+
+        System.IO.File.AppendAllText("../hunter.txt", toWrite);
+    }
 }

@@ -61,26 +61,26 @@ public class World : MonoBehaviour
         int hunterX = 0;
         int hunterY = 0;
 
-        int fugitiveX = 0;
-        int fugitiveY = 0;
+        int preyX = 0;
+        int preyY = 0;
 
-        bool notPlaceable = (hunterX == fugitiveX && hunterY == fugitiveY) ||
+        bool notPlaceable = (hunterX == preyX && hunterY == preyY) ||
             GetTypeOfCell(hunterX, hunterY) != typeOfCell.normal ||
-            GetTypeOfCell(fugitiveX, fugitiveY) != typeOfCell.normal;
+            GetTypeOfCell(preyX, preyY) != typeOfCell.normal;
         while (notPlaceable)
         {
             hunterX = Random.Range(0, sizeX - 1);
             hunterY = Random.Range(0, sizeY - 1);
-            fugitiveX = Random.Range(0, sizeX - 1);
-            fugitiveY = Random.Range(0, sizeY - 1);
-            notPlaceable = (hunterX == fugitiveX && hunterY == fugitiveY) ||
+            preyX = Random.Range(0, sizeX - 1);
+            preyY = Random.Range(0, sizeY - 1);
+            notPlaceable = (hunterX == preyX && hunterY == preyY) ||
                 GetTypeOfCell(hunterX, hunterY) != typeOfCell.normal ||
-                GetTypeOfCell(fugitiveX, fugitiveY) != typeOfCell.normal;
+                GetTypeOfCell(preyX, preyY) != typeOfCell.normal;
         }
-        hunter = new Hunter(hunterX, hunterY);
+        hunter = new Hunter(hunterX, hunterY, this);
         SetTypeOfCell(hunterX, hunterY, typeOfCell.hunter);
-        prey = new Prey(fugitiveX, fugitiveY);
-        SetTypeOfCell(fugitiveX, fugitiveY, typeOfCell.prey);
+        prey = new Prey(preyX, preyY, this);
+        SetTypeOfCell(preyX, preyY, typeOfCell.prey);
     }
 
     public typeOfCell GetTypeOfCell(int i, int j)
@@ -184,9 +184,6 @@ public class World : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.A))
             MoveActor(hunter, -1, 0);
 
-        if (Input.GetKeyUp(KeyCode.L))
-            SaveResults(hunter);
-
         if (Input.GetKeyUp(KeyCode.R))
             ResetWorld();
 
@@ -197,8 +194,8 @@ public class World : MonoBehaviour
             if (hunter.Energy > 0 && prey.Energy > 0)
             {
                 if (turn == 0)
-                    Turn(prey);
-                else Turn(hunter);
+                    prey.Turn();
+                else hunter.Turn();
                 turn = (turn + 1) % 2;
                 hunterEnergy.text = "Hunter Energy: " + hunter.Energy;
                 preyEnergy.text = "Prey Energy: " + prey.Energy;
@@ -207,8 +204,17 @@ public class World : MonoBehaviour
             {
                 string winner = "None";
                 if (hunter.Energy > 0)
+                {
+                    hunter.SaveResults(true);
+                    prey.SaveResults(false);
                     winner = "Hunter";
-                else winner = "Prey;";
+                }
+                else
+                {
+                    prey.SaveResults(true);
+                    hunter.SaveResults(false);
+                    winner = "Prey;";
+                }
                 Debug.Log("Game Over. Winner: " + winner);
             }
         }
@@ -221,7 +227,7 @@ public class World : MonoBehaviour
         for (int i = 0; i < nColumns; i++)
         {
             int x = Random.Range(1, sizeX - 2);
-            int y = Random.Range(0, sizeY - 1);
+            //int y = Random.Range(0, sizeY - 1);
 
             for (int j = 1; j < sizeY - 1; j++)
             {
@@ -233,7 +239,7 @@ public class World : MonoBehaviour
         //row
         for (int i = 0; i < nRows; i++)
         {
-            int x = Random.Range(0, sizeX - 1);
+            //int x = Random.Range(0, sizeX - 1);
             int y = Random.Range(1, sizeY - 2);
 
             for (int j = 1; j < sizeX - 1; j++)
@@ -274,171 +280,66 @@ public class World : MonoBehaviour
         }
     }
 
-    Vector2 detectCellNearby(int x, int y, int distance, typeOfCell typeToDetect)
+    byte detectCellNearby(int x, int y, int distance, typeOfCell typeToDetect)
     {
-        Vector2 cellNearby = new Vector2(0,0);
+        byte cellNearby = 0x00;
 
-        for(int i = x; i < x+distance; i++)
+        for(int i = 1; i < distance; i++)
         {
-            if (GetTypeOfCell(i, y) == typeToDetect)
-                cellNearby.x = 1;
-        }
-
-        for (int i = x; i < x - distance; i--)
-        {
-            if (GetTypeOfCell(i, y) == typeToDetect)
-                cellNearby.x = -1;
-        }
-
-        for (int i = y; i < y + distance; i++)
-        {
-            if (GetTypeOfCell(x, i) == typeToDetect)
-                cellNearby.y = 1;
-        }
-
-        for (int i = y; i < y - distance; i--)
-        {
-            if (GetTypeOfCell(x, i) == typeToDetect)
-                cellNearby.y = -1;
-        }
-
-        return cellNearby;
-    }
-
-    bool hasCellNearby(int x, int y, int distance, typeOfCell typeToDetect)
-    {
-        bool cellNearby = false;
-
-        for (int i = x; i < x + distance; i++)
-        {
-            if (GetTypeOfCell(i, y) == typeToDetect)
-                cellNearby = true;
-        }
-
-        for (int i = x; i < x - distance; i--)
-        {
-            if (GetTypeOfCell(i, y) == typeToDetect)
-                cellNearby = true;
-        }
-
-        for (int i = y; i < y + distance; i++)
-        {
-            if (GetTypeOfCell(x, i) == typeToDetect)
-                cellNearby = true;
-        }
-
-        for (int i = y; i < y - distance; i--)
-        {
-            if (GetTypeOfCell(x, i) == typeToDetect)
-                cellNearby = true;
-        }
-
-        return cellNearby;
-    }
-
-    private void Turn(Actor actor)
-    {
-        /*List<Action> actions = actor.Actions;
-        bool isValid = false;
-
-        while (!isValid)
-        {
-            int randIndex = Random.Range(0, actions.Count - 1);
-            isValid = actions[randIndex].CanExecute(this);
-            if (isValid)
-                actions[randIndex].Execute(this);
-        }*/
-
-        bool isValid = false;
-        //Actor.state state = chooseState(actor);
-        byte[] state = chooseState(actor);
-        Dictionary<Action, float> gene = actor.Genes[state];
-
-        System.Random r = new System.Random();
-
-        while (!isValid)
-        {
-            float diceRoll = (float)r.NextDouble();
-            float cumulative = 0.0f;
-            foreach (Action action in actor.Actions)
+            if (GetTypeOfCell(x + i, y) == typeToDetect)
             {
-                cumulative += gene[action];
-                if(diceRoll < cumulative)
-                {
-                    isValid = action.CanExecute(this);
-                    if (isValid)
-                        action.Execute(this);
-                    break;
-                }
+                cellNearby |= 0x01;
+                break;
             }
         }
-        
 
+        for (int i = 1; i < distance; i++)
+        {
+            if (GetTypeOfCell(x - i, y) == typeToDetect)
+            {
+                cellNearby |= 0x02;
+                break;
+            }
+        }
+
+        for (int i = 1; i < distance; i++)
+        {
+            if (GetTypeOfCell(x, y + i) == typeToDetect)
+            {
+                cellNearby |= 0x04;
+                break;
+            }
+        }
+
+        for (int i = 1; i < distance; i++)
+        {
+            if (GetTypeOfCell(x, y - i) == typeToDetect)
+            {
+                cellNearby |= 0x08;
+                break;
+            }
+        }
+        return cellNearby;
     }
 
-    public byte[] chooseState(Actor actor)
+    public byte[] getState(Actor actor)
     {
-        byte[] states = new byte[12]; // 0 enemyD, 1 enemyU, 2 enemyL, 3 enemyR, 4 trapD, 5 trapU, 6 trapL, 7 trapR, 8 plantD, 9 plantU, 10 plantL, 11 plantR
+        byte[] states = new byte[3]; // 0 enemyD, 2 plant, 3 trap
         for (int i = 0; i < states.Length; i++)
         {
-            states[i] = 0;
+            states[i] = 0x00;
         }
-        if (hasCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.hunter))
+        if (actor.type == Actor.typeofActor.hunter)
         {
-            Vector2 positions = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.hunter);
-            if (positions.x == -1)
-                states[0] = 1;
-            else if (positions.x == 1)
-                states[1] = 1;
-
-            if (positions.y == -1)
-                states[2] = 1;
-            else if (positions.y == 1)
-                states[3] = 1;
+            states[0] = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.prey);
         }
-        if (hasCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.trap))
+        else
         {
-            Vector2 positions = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.trap);
-            if (positions.x == -1)
-                states[4] = 1;
-            else if (positions.x == 1)
-                states[5] = 1;
-
-            if (positions.y == -1)
-                states[6] = 1;
-            else if (positions.y == 1)
-                states[7] = 1;
+            states[0] = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.hunter);
         }
-        if (hasCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.prey))
-        {
-            Vector2 positions = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.hunter);
-            if (positions.x == -1)
-                states[0] = 1;
-            else if (positions.x == 1)
-                states[1] = 1;
-
-            if (positions.y == -1)
-                states[2] = 1;
-            else if (positions.y == 1)
-                states[3] = 1;
-        }
-        if (hasCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.plant))
-        {
-            Vector2 positions = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.hunter);
-            if (positions.x == -1)
-                states[8] = 1;
-            else if (positions.x == 1)
-                states[9] = 1;
-
-            if (positions.y == -1)
-                states[10] = 1;
-            else if (positions.y == 1)
-                states[11] = 1;
-        }
-        if (hasCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.obstacle))
-        {
-            
-        }
+        
+        states[1] = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.plant);
+        states[2] = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.trap);
 
         return states;
     }
@@ -493,8 +394,4 @@ public class World : MonoBehaviour
         prey.Death();
     }
 
-    public void SaveResults(Actor actor)
-    {
-        System.IO.File.AppendAllText("../yourtextfile.txt", "This is text that goes into the text file");
-    }
 }

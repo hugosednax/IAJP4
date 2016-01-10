@@ -4,7 +4,7 @@ using WorldDefinition;
 
 public class MoveUp : Action {
 
-    public MoveUp(Actor actor) : base(actor) { }
+    public MoveUp(Actor actor) : base(actor) { Id = 3; }
 
     public override bool CanExecute(World world)
     {
