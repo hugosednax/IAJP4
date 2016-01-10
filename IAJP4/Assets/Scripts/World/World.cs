@@ -52,7 +52,6 @@ public class World : MonoBehaviour
     public void ResetWorld()
     {
         Debug.Log("start reset");
-        tickTimer = 2f;
         world = new List<typeOfCell>();
         for (int i = 0; i < sizeX * sizeY; i++)
         {
@@ -372,6 +371,8 @@ public class World : MonoBehaviour
         {
             actor.Energy--;
             HandleCollision(actor, actor.PosX + offset, actor.PosY);
+            if (actor.Energy < 0)
+                return;
             SetTypeOfCell(actor.PosX, actor.PosY, typeOfCell.normal);
 
             typeOfCell actorType;
@@ -390,6 +391,8 @@ public class World : MonoBehaviour
         {
             actor.Energy--;
             HandleCollision(actor, actor.PosX, actor.PosY + offset);
+            if (actor.Energy < 0)
+                return;
             SetTypeOfCell(actor.PosX, actor.PosY, typeOfCell.normal);
 
             typeOfCell actorType;
