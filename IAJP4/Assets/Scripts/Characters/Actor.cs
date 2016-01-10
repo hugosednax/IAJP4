@@ -13,15 +13,16 @@ public abstract class Actor {
     public int PosX { get; set; }
     public int PosY { get; set; }
     public enum typeofActor { hunter, prey };
-    public enum state { enemyDown, enemyUp, enemyLeft, enemyRight,
-                        trapDown, trapUp, trapLeft, trapRight,
-                        plantDown, plantUp, plantLeft, plantRight
-    };
     public typeofActor type { private set; get; }
     public Dictionary<byte[], Dictionary<Action, float>> Genes { get; set; }
     public List<Action> Actions { protected set; get; }
 
     protected List<Pair<byte[], int>> statesOfThisGame;
+    /*
+        enemyDown, enemyUp, enemyLeft, enemyRight,
+        trapDown, trapUp, trapLeft, trapRight,
+        plantDown, plantUp, plantLeft, plantRight
+    */
 
     public Actor(int posX, int posY, typeofActor type, World world)
     {
@@ -34,17 +35,40 @@ public abstract class Actor {
         //percisa de valores randomizados
     }
 
-    public Actor(int posX, int posY, typeofActor type, Dictionary<byte[], Dictionary<Action, float>> genesFromPappi)
+    public Actor(int posX, int posY, typeofActor type, World world, Dictionary<byte[], Dictionary<Action, float>> genesFromPappi)
     {
         this.PosX = posX;
         this.PosY = posY;
         this.type = type;
         Genes = genesFromPappi;
+        this.world = world;
+        statesOfThisGame = new List<Pair<byte[], int>>();
+    }
+
+    public Dictionary<Action, float> getGeneFromState(byte[] state)
+    {
+        Dictionary<Action, float> gene;
+
+        if (Genes.ContainsKey(state))
+        {
+            gene = Genes[state];
+        }
+        else {
+            gene = new Dictionary<Action, float>();
+            System.Random r = new System.Random();
+            for (int i = 0; i < Actions.Count; i++)
+            {
+                gene.Add(Actions[i], (float)r.NextDouble());
+            }
+            Genes.Add(state, gene);
+        }
+        return gene;
     }
 
     public void Death()
     {
         Energy = -999;
+        world.ResetWorld();
     }
 
     public abstract void HandleCollision(typeOfCell typeOfCell);
@@ -52,15 +76,12 @@ public abstract class Actor {
 
     public void Turn()
     {
+        Debug.Log("start real turn");
         bool isValid = false;
         //Actor.state state = chooseState(actor);
         byte[] state = world.getState(this);
 
-        if (!Genes.ContainsKey(state))
-        {
-            Genes.Add(state, new Dictionary<Action, float>());
-        }
-        Dictionary<Action, float> gene = Genes[state];
+        Dictionary<Action, float> gene = getGeneFromState(state);
 
         System.Random r = new System.Random();
 
@@ -84,6 +105,7 @@ public abstract class Actor {
                 }
             }
         }
+        Debug.Log("end real turn");
     }
 }
 

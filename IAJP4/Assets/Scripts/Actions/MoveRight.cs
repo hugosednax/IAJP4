@@ -8,7 +8,7 @@ public class MoveRight : Action {
 
     public override bool CanExecute(World world)
     {
-        if (world.GetTypeOfCell(actor.PosX + 1, actor.PosY) == typeOfCell.obstacle)
+        if (world.GetTypeOfCell(actor.PosX + 1, actor.PosY) == typeOfCell.obstacle && actor.Energy > 0)
         {
             return false;
         }

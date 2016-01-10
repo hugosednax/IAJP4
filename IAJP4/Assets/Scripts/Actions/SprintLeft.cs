@@ -10,7 +10,7 @@ public class SprintLeft : Action {
     {
         for (int i = 1; i <= World.SPRINT_LENGTH; i++)
         {
-            if (world.GetTypeOfCell(actor.PosX - i, actor.PosY) == typeOfCell.obstacle)
+            if (world.GetTypeOfCell(actor.PosX - i, actor.PosY) == typeOfCell.obstacle && actor.Energy > 0)
             {
                 return false;
             }
