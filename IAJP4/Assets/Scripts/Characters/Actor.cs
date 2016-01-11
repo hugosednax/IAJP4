@@ -51,13 +51,23 @@ public abstract class Actor {
         {
             gene = ActorGenes.Genes[state];
         }
-        else {
+        else
+        {
             gene = new Dictionary<Action, float>();
             System.Random r = new System.Random();
+            float cumProb = 0;
             for (int i = 0; i < Actions.Count; i++)
             {
-                gene.Add(Actions[i], (float)r.NextDouble());
+                float newProb = (float)r.NextDouble();
+                cumProb += newProb;
+                gene.Add(Actions[i], newProb);
             }
+            /*
+            for (int i = 0; i < Actions.Count; i++)
+            {
+                gene[Actions[i]] = gene[Actions[i]] / cumProb;
+            }*/
+
             ActorGenes.Add(state, gene);
         }
         return gene;

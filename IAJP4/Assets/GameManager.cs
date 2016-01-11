@@ -30,18 +30,20 @@ public class GameManager : MonoBehaviour {
 
     public void EndedWorld()
     {
-        finishedSamples++;
         Debug.Log("One world finished");
+        finishedSamples++;
         if (finishedSamples == worlds.Count)
         {
             Debug.Log("Resetting all");
+            Pair<List<GenesEncap>, List<GenesEncap>> pairOfResults = StartNewGen();
             for (int i = 0; i < numberOfWorlds; i++)
             {
-                worlds[i].ResetWorld();
+                worlds[i].ResetWorld(pairOfResults.First[i], pairOfResults.Second[i]);
             }
             finishedSamples = 0;
         }
     }
+
 
     private Pair<List<GenesEncap>, List<GenesEncap>> StartNewGen()
     {

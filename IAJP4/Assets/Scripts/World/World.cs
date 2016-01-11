@@ -128,6 +128,7 @@ public class World : MonoBehaviour
 
     public void EndGame()
     {
+        Debug.Log("call endWorld");
         manager.EndedWorld();
     }
 

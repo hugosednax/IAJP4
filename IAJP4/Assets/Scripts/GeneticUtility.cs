@@ -41,20 +41,46 @@ static class GeneticUtility
         return newActor;
     }
 
+
     public static void mutate(GenesEncap genes)
     {
+        
         System.Random r = new System.Random();
+        GenesEncap modified = new GenesEncap();
+
         foreach (KeyValuePair<byte[], Dictionary<Action, float>> gene in genes.Genes)
         {
             if ((float)r.NextDouble() <= 0.015f)
             {
                 Dictionary<Action, float> newGene = new Dictionary<Action, float>();
+                float cumProb = 0;
                 foreach (KeyValuePair<Action, float> actionValuePair in gene.Value)
                 {
-                    genes.Genes[gene.Key][actionValuePair.Key] = (float)r.NextDouble();
+                    float newProb = (float)r.NextDouble();
+                    cumProb += newProb;
+                    newGene.Add(actionValuePair.Key, newProb);
                 }
+                foreach (KeyValuePair<Action, float> actionValuePair in gene.Value)
+                {
+                    newGene[actionValuePair.Key] = newGene[actionValuePair.Key] / cumProb;
+                }
+
+                modified.Add(gene.Key, newGene);
             }
         }
+
+        List<byte[]> keyOfModified = modified.Genes.Keys.ToList<byte[]>();
+        for (int i = 0; i < keyOfModified.Count; i++)
+        {
+            genes.Genes[keyOfModified[i]] = modified.Genes[keyOfModified[i]];
+
+        }
+        
     }
+
+
+
+
+
 }
 
