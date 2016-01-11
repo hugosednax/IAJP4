@@ -23,7 +23,7 @@ public class World : MonoBehaviour
     [SerializeField]
     private int  generation = 0;
     [SerializeField]
-    private float tickTimer = 0.5f;
+    private float tickTimer = 0.01f;
 
     public const int SPRINT_LENGTH = 2;
     public int numberOfTraps = 5;
@@ -36,6 +36,8 @@ public class World : MonoBehaviour
     Text hunterEnergy;
     Text preyEnergy;
     float elapsedTime = 0f;
+
+    GameManager manager;
 
     // Use this for initialization
     void Awake()
@@ -51,7 +53,6 @@ public class World : MonoBehaviour
 
     public void ResetWorld()
     {
-        Debug.Log("start reset");
         world = new List<typeOfCell>();
         for (int i = 0; i < sizeX * sizeY; i++)
         {
@@ -92,9 +93,16 @@ public class World : MonoBehaviour
         SetTypeOfCell(preyX, preyY, typeOfCell.prey);
  
         generation++;
-        Debug.Log("end reset");
     }
 
+    public void EndGame()
+    {
+        manager.EndedWorld();
+    }
+
+    public void setGameManager(GameManager gm) { manager = gm; }
+
+    #region cellLogic
     public typeOfCell GetTypeOfCell(int i, int j)
     {
         if (i < 0 || j < 0 || i > sizeX - 1 || j > sizeY - 1)
@@ -109,11 +117,6 @@ public class World : MonoBehaviour
 
     void SetTypeOfCell(int i, int j, typeOfCell newType)
     {
-        if(newType == typeOfCell.hunter)
-            Debug.Log("Placed Hunter at " + i + ";" + j);
-        else if (newType == typeOfCell.prey)
-            Debug.Log("Placed Prey at " + i + ";" + j);
-
         world[sizeX * i + j] = newType;
     }
 
@@ -141,6 +144,7 @@ public class World : MonoBehaviour
     {
         return new Vector2(0, 0);//not workerino
     }
+    #endregion
 
     void OnDrawGizmos()
     {
@@ -175,7 +179,7 @@ public class World : MonoBehaviour
             {
                 Gizmos.color = Color.black; //wtf is this
             }
-            Gizmos.DrawCube(new Vector3(i / sizeX * spacing, i % sizeX * spacing, 0) - new Vector3(spacing * sizeX / 2, spacing * sizeY / 2, 0)
+            Gizmos.DrawCube(transform.position + new Vector3(i / sizeX * spacing, i % sizeX * spacing, 0) - new Vector3(spacing * sizeX / 2, spacing * sizeY / 2, 0)
                 + new Vector3(spacing / 2, spacing / 2, 0)
                 , new Vector3(spacing, spacing, 1));
         }
@@ -199,16 +203,12 @@ public class World : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.A))
             MoveActor(hunter, -1, 0);
 
-        if (Input.GetKeyUp(KeyCode.R))
-            ResetWorld();
-
         //GAME CYCLE
         if (elapsedTime > tickTimer)
         {
             elapsedTime = 0f;
             if (hunter.Energy > 0 && prey.Energy > 0)
             {
-                Debug.Log("turn");
                 if (turn == 0)
                     prey.Turn();
                 else hunter.Turn();
@@ -232,12 +232,13 @@ public class World : MonoBehaviour
                     winner = "Prey;";
                 }
                 Debug.Log("reset by stamina");
-                ResetWorld();
+                EndGame();
                 Debug.Log("Game Over. Winner: " + winner);
             }
         }
     }
 
+    #region populateEnvironment
     void PopulateObstacles(int nColumns, int nRows)
     {
 
@@ -297,6 +298,7 @@ public class World : MonoBehaviour
             SetTypeOfCell(selectedLocation, typeOfCell.plant);
         }
     }
+    #endregion
 
     byte detectCellNearby(int x, int y, int distance, typeOfCell typeToDetect)
     {
@@ -364,7 +366,6 @@ public class World : MonoBehaviour
 
     public void MoveActor(Actor actor, int offsetX, int offsetY)
     {
-        Debug.Log("start move Actor");
         int offset = offsetX == 0 ? 0 : (offsetX > 0 ? 1 : -1);
 
         for (int i = 0; i < Mathf.Abs(offsetX); i++)
@@ -404,7 +405,6 @@ public class World : MonoBehaviour
             SetTypeOfCell(actor.PosX, actor.PosY + offset, actorType);
             actor.PosY += offset;
         }
-        Debug.Log("end move Actor");
     }
 
     private void HandleCollision(Actor actor, int posX, int posY)

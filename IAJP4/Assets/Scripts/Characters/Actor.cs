@@ -68,7 +68,7 @@ public abstract class Actor {
     public void Death()
     {
         Energy = -999;
-        world.ResetWorld();
+        world.EndGame();
     }
 
     public abstract void HandleCollision(typeOfCell typeOfCell);
@@ -76,7 +76,6 @@ public abstract class Actor {
 
     public void Turn()
     {
-        Debug.Log("start real turn");
         bool isValid = false;
         //Actor.state state = chooseState(actor);
         byte[] state = world.getState(this);
@@ -105,7 +104,6 @@ public abstract class Actor {
                 }
             }
         }
-        Debug.Log("end real turn");
     }
 }
 
