@@ -81,6 +81,7 @@ public class World : MonoBehaviour
 
     public void ResetWorld(GenesEncap hunterGenesFromPappi = null, GenesEncap preyGenesFromPappi = null)
     {
+        finished = false;
         world = new List<typeOfCell>();
         for (int i = 0; i < sizeX * sizeY; i++)
         {
@@ -98,9 +99,7 @@ public class World : MonoBehaviour
         int preyX = 0;
         int preyY = 0;
 
-        bool notPlaceable = (hunterX == preyX && hunterY == preyY) ||
-            GetTypeOfCell(hunterX, hunterY) != typeOfCell.normal ||
-            GetTypeOfCell(preyX, preyY) != typeOfCell.normal;
+        bool notPlaceable = true;
         while (notPlaceable)
         {
             hunterX = Random.Range(0, sizeX - 1);
@@ -110,25 +109,31 @@ public class World : MonoBehaviour
             notPlaceable = (hunterX == preyX && hunterY == preyY) ||
                 GetTypeOfCell(hunterX, hunterY) != typeOfCell.normal ||
                 GetTypeOfCell(preyX, preyY) != typeOfCell.normal;
+            //Debug.Log("worldwhilenotplace");
         }
 
-        Debug.Log("reset "+transform.name);
-        if (hunterGenesFromPappi == null)
+        //Debug.Log("reset "+transform.name);
+        if (hunterGenesFromPappi == null){
             hunter = new Hunter(hunterX, hunterY, this);
+        }
         else
         {
-            Debug.Log("2nd");
             hunter = new Hunter(hunterX, hunterY, this, hunterGenesFromPappi);
         }
+        hunter = new Hunter(hunterX, hunterY, this);
         SetTypeOfCell(hunterX, hunterY, typeOfCell.hunter);
 
         if (preyGenesFromPappi == null)
+        {
             prey = new Prey(preyX, preyY, this);
+        }
         else
         {
-            Debug.Log("2nd");
             prey = new Prey(preyX, preyY, this, preyGenesFromPappi);
         }
+        
+        prey = new Prey(preyX, preyY, this);
+        //Debug.Log("Finihsed!!!");
         SetTypeOfCell(preyX, preyY, typeOfCell.prey);
 
         generation++;
@@ -137,11 +142,12 @@ public class World : MonoBehaviour
     public void EndGame()
     {
         //Debug.Log("End");
-        if (!finished)
-        {
-            manager.EndedWorld(transform.name);
-            finished = true;
-        }
+        //Debug.Log("World + " + id + " trying to end game");
+        /*if (!finished)
+        {*/
+            manager.EndedWorld(id);
+           // finished = true;
+        //}
     }
 
     public void setGameManager(GameManager gm) { manager = gm; }
@@ -262,7 +268,7 @@ public class World : MonoBehaviour
             }
             else
             {
-                string winner = "None";
+                /*string winner = "None";
                 if (hunter.Energy > 0)
                 {
                     winner = "Hunter";
@@ -270,12 +276,12 @@ public class World : MonoBehaviour
                 else
                 {
                     winner = "Prey;";
-                }
+                }*/
                 //Debug.Log("reset by stamina");
                 hunter.SaveResults(id);
                 prey.SaveResults(id);
                 EndGame();
-                Debug.Log("Game Over. Winner: " + winner);
+                //Debug.Log("Game Over. Winner: " + winner);
             }
         }
     }
@@ -320,6 +326,7 @@ public class World : MonoBehaviour
             {
                 selectedLocation = Random.Range(0, sizeX * sizeY - 1);
                 notPlaceable = GetTypeOfCell(selectedLocation) != typeOfCell.normal;
+                //Debug.Log("worldwhilenotplace2");
             }
             //Debug.Log(selectedLocation);
             SetTypeOfCell(selectedLocation, typeOfCell.trap);
@@ -336,6 +343,7 @@ public class World : MonoBehaviour
             {
                 selectedLocation = Random.Range(0, sizeX * sizeY - 1);
                 notPlaceable = GetTypeOfCell(selectedLocation) != typeOfCell.normal;
+                //Debug.Log("worldwhilenotplace3");
             }
             SetTypeOfCell(selectedLocation, typeOfCell.plant);
         }

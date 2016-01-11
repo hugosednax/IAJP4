@@ -22,7 +22,6 @@ public class Hunter : Actor
         Actions.Add(new SprintUp(this));
         Actions.Add(new SprintLeft(this));
         Actions.Add(new SprintRight(this));
-
     }
 
     public Hunter(int posX, int posY, World world, GenesEncap genesFromPappi)
@@ -38,7 +37,6 @@ public class Hunter : Actor
         Actions.Add(new SprintUp(this));
         Actions.Add(new SprintLeft(this));
         Actions.Add(new SprintRight(this));
-
     }
 
     public override void HandleCollision(typeOfCell typeCell)
@@ -71,12 +69,12 @@ public class Hunter : Actor
 
     public override void SaveResults(int sampleId)
     {
-        System.IO.File.WriteAllText("../hunter" + sampleId + ".txt", ActorGenes.ToString());
+        //System.IO.File.WriteAllText("../hunter" + sampleId + ".txt", ActorGenes.ToString());
     }
 
     public override void LoadResults(int sampleId)
     {
-        ActorGenes = new GenesEncap();
+        /*ActorGenes = new GenesEncap();
         string[] lines = System.IO.File.ReadAllLines("../hunter" + sampleId + ".txt");
         for (int i = 0; i < lines.Length; i++)
         {
@@ -101,7 +99,7 @@ public class Hunter : Actor
                 }
             }
 
-        }
+        }*/
 
     }
 

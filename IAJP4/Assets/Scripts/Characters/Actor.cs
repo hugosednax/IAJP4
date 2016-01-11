@@ -55,7 +55,7 @@ public abstract class Actor {
         {
             gene = new Dictionary<Action, float>();
             System.Random r = new System.Random();
-            float cumProb = 0;
+            float cumProb = 0.0f;
             for (int i = 0; i < Actions.Count; i++)
             {
                 
@@ -96,6 +96,7 @@ public abstract class Actor {
 
         while (!isValid)
         {
+            //Debug.Log("whilevalid");
             float diceRoll = (float)r.NextDouble();
             float cumulative = 0.0f;
             foreach (Action action in Actions)

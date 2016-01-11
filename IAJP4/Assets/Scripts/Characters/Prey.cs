@@ -64,7 +64,7 @@ public class Prey : Actor {
 
     public override void LoadResults(int sampleId)
     {
-        ActorGenes = new GenesEncap();
+        /*ActorGenes = new GenesEncap();
         string[] lines = System.IO.File.ReadAllLines("../prey" + sampleId + ".txt");
         for (int i = 0; i < lines.Length; i++)
         {
@@ -89,7 +89,7 @@ public class Prey : Actor {
                 }
             }
 
-        }
+        }*/
         
     }
 

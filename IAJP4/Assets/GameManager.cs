@@ -9,13 +9,18 @@ public class GameManager : MonoBehaviour {
     public int numberOfWorlds;
 
     private List<World> worlds;
-    private int finishedSamples = 0;
+    private bool[] finishedSamples;
 
 	// Use this for initialization
 	void Start () {
         worlds = new List<World>();
         GameObject worldPhysical;
         World worldInstance;
+        finishedSamples = new bool[4];
+        for (int i = 0; i < 4; i++)
+        {
+            finishedSamples[i] = false;
+        }
         for (int i = 0; i < numberOfWorlds; i++)
         {
             worldPhysical = (GameObject)Instantiate(worldPrefab, worldPrefab.transform.position + new Vector3(i*300, 0,0)
@@ -29,23 +34,31 @@ public class GameManager : MonoBehaviour {
         }
 	}
 
-    public void EndedWorld(string name)
+    public void EndedWorld(int id)
     {
-        Debug.Log(name + " finished");
-        finishedSamples++;
-        if (finishedSamples == worlds.Count)
+        //Debug.Log(name + " finished");
+        finishedSamples[id] = true;
+        bool finished = true;
+        for (int i = 0; i < 4; i++)
         {
-            Debug.Log("Resetting all");
+            finished |= finishedSamples[i];
+        }
+
+        if (finished)
+        {
+            //Debug.Log("Resetting all");
             Pair<List<GenesEncap>, List<GenesEncap>> pairOfResults = StartNewGen();
             for (int i = 0; i < numberOfWorlds; i++)
             {
                 worlds[i].ResetWorld(pairOfResults.First[i], pairOfResults.Second[i]);
             }
-            finishedSamples = 0;
+            for (int i = 0; i < 4; i++)
+            {
+                finishedSamples[i] = false;
+            }
         }
         
     }
-
 
     private Pair<List<GenesEncap>, List<GenesEncap>> StartNewGen()
     {
