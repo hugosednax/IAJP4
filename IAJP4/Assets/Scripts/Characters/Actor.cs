@@ -14,7 +14,7 @@ public abstract class Actor {
     public int PosY { get; set; }
     public enum typeofActor { hunter, prey };
     public typeofActor type { private set; get; }
-    public Dictionary<byte[], Dictionary<Action, float>> Genes { get; set; }
+    public GenesEncap ActorGenes { get; set; }
     public List<Action> Actions { protected set; get; }
 
     protected List<Pair<byte[], int>> statesOfThisGame;
@@ -29,18 +29,18 @@ public abstract class Actor {
         this.PosX = posX;
         this.PosY = posY;
         this.type = type;
-        Genes = new Dictionary<byte[], Dictionary<Action, float>>(new BaComp());
+        ActorGenes = new GenesEncap();
         this.world = world;
         statesOfThisGame = new List<Pair<byte[], int>>();
         //percisa de valores randomizados
     }
 
-    public Actor(int posX, int posY, typeofActor type, World world, Dictionary<byte[], Dictionary<Action, float>> genesFromPappi)
+    public Actor(int posX, int posY, typeofActor type, World world, GenesEncap genesFromPappi)
     {
         this.PosX = posX;
         this.PosY = posY;
         this.type = type;
-        Genes = genesFromPappi;
+        ActorGenes = genesFromPappi;
         this.world = world;
         statesOfThisGame = new List<Pair<byte[], int>>();
     }
@@ -49,9 +49,9 @@ public abstract class Actor {
     {
         Dictionary<Action, float> gene;
 
-        if (Genes.ContainsKey(state))
+        if (ActorGenes.Genes.ContainsKey(state))
         {
-            gene = Genes[state];
+            gene = ActorGenes.Genes[state];
         }
         else {
             gene = new Dictionary<Action, float>();
@@ -60,7 +60,7 @@ public abstract class Actor {
             {
                 gene.Add(Actions[i], (float)r.NextDouble());
             }
-            Genes.Add(state, gene);
+            ActorGenes.Add(state, gene);
         }
         return gene;
     }

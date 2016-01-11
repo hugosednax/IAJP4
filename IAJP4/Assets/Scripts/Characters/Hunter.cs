@@ -22,7 +22,7 @@ public class Hunter : Actor
 
     }
 
-    public Hunter(int posX, int posY, World world, Dictionary<byte[], Dictionary<Action, float>> genesFromPappi)
+    public Hunter(int posX, int posY, World world, GenesEncap genesFromPappi)
         : base(posX, posY, Actor.typeofActor.hunter, world, genesFromPappi)
     {
         Actions = new List<Action>();

@@ -7,22 +7,22 @@ using System.Text;
 class GeneticUtility
 {
 
-    private static Dictionary<byte[], Dictionary<Action, float>> Crossover(Actor actor1, Actor actor2)
+    public static GenesEncap Crossover(Actor actor1, Actor actor2)
     {
-        Dictionary<byte[], Dictionary<Action, float>> newActor = new Dictionary<byte[], Dictionary<Action, float>>();
+        GenesEncap newActor = new GenesEncap();
         // Loop through genes
         System.Random r = new System.Random();
-        foreach (KeyValuePair<byte[], Dictionary<Action, float>> gene in actor1.Genes)
+        foreach (KeyValuePair<byte[], Dictionary<Action, float>> gene in actor1.ActorGenes.Genes)
         {
-            if (actor2.Genes.ContainsKey(gene.Key))
+            if (actor2.ActorGenes.ContainsKey(gene.Key))
             {
                 if ((float)r.NextDouble() <= 0.5f)
                 {
-                    newActor.Add(gene.Key, actor1.Genes[gene.Key]);
+                    newActor.Add(gene.Key, actor1.ActorGenes.Genes[gene.Key]);
                 }
                 else
                 {
-                    newActor.Add(gene.Key, actor2.Genes[gene.Key]);
+                    newActor.Add(gene.Key, actor2.ActorGenes.Genes[gene.Key]);
                 }
             } else
             {
@@ -30,9 +30,9 @@ class GeneticUtility
             }
         }
 
-        foreach (KeyValuePair<byte[], Dictionary<Action, float>> gene in actor2.Genes)
+        foreach (KeyValuePair<byte[], Dictionary<Action, float>> gene in actor2.ActorGenes.Genes)
         {
-            if (!actor2.Genes.ContainsKey(gene.Key))
+            if (!actor2.ActorGenes.ContainsKey(gene.Key))
             {
                 newActor.Add(gene.Key, gene.Value);
             }
@@ -41,17 +41,17 @@ class GeneticUtility
         return newActor;
     }
 
-    private static void mutate(Dictionary<byte[], Dictionary<Action, float>> genes)
+    public static void mutate(GenesEncap genes)
     {
         System.Random r = new System.Random();
-        foreach (KeyValuePair<byte[], Dictionary<Action, float>> gene in genes)
+        foreach (KeyValuePair<byte[], Dictionary<Action, float>> gene in genes.Genes)
         {
             if ((float)r.NextDouble() <= 0.015f)
             {
                     Dictionary<Action, float> newGene = new Dictionary<Action, float>();
                     foreach (KeyValuePair<Action, float> actionValuePair in gene.Value)
                     {
-                        genes[gene.Key][actionValuePair.Key] = (float)r.NextDouble();
+                        genes.Genes[gene.Key][actionValuePair.Key] = (float)r.NextDouble();
                     }
             }
         }

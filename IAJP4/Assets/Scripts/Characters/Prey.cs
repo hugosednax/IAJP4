@@ -17,7 +17,7 @@ public class Prey : Actor {
         Actions.Add(new Rest(this));
     }
 
-    public Prey(int posX, int posY, World world, Dictionary<byte[], Dictionary<Action, float>> genesFromPappi)
+    public Prey(int posX, int posY, World world, GenesEncap genesFromPappi)
         : base(posX, posY, Actor.typeofActor.prey, world, genesFromPappi)
     {
         Actions = new List<Action>();

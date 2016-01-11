@@ -39,6 +39,32 @@ public class World : MonoBehaviour
 
     GameManager manager;
 
+    public Hunter Hunter
+    {
+        get
+        {
+            return hunter;
+        }
+
+        set
+        {
+            hunter = value;
+        }
+    }
+
+    public Prey Prey
+    {
+        get
+        {
+            return prey;
+        }
+
+        set
+        {
+            prey = value;
+        }
+    }
+
     // Use this for initialization
     void Awake()
     {
@@ -51,7 +77,7 @@ public class World : MonoBehaviour
         ResetWorld();
     }
 
-    public void ResetWorld()
+    public void ResetWorld(GenesEncap hunterGenesFromPappi = null, GenesEncap preyGenesFromPappi = null)
     {
         world = new List<typeOfCell>();
         for (int i = 0; i < sizeX * sizeY; i++)
@@ -84,12 +110,16 @@ public class World : MonoBehaviour
                 GetTypeOfCell(preyX, preyY) != typeOfCell.normal;
         }
 
-
-        hunter = new Hunter(hunterX, hunterY, this);
+        if(hunterGenesFromPappi == null)
+            hunter = new Hunter(hunterX, hunterY, this);
+        else
+            hunter = new Hunter(hunterX, hunterY, this, hunterGenesFromPappi);
         SetTypeOfCell(hunterX, hunterY, typeOfCell.hunter);
 
-
-        prey = new Prey(preyX, preyY, this);
+        if (preyGenesFromPappi == null)
+            prey = new Prey(preyX, preyY, this);
+        else
+            prey = new Prey(preyX, preyY, this, preyGenesFromPappi);
         SetTypeOfCell(preyX, preyY, typeOfCell.prey);
  
         generation++;
