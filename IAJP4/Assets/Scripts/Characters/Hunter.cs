@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using WorldDefinition;
+using System.IO;
+using System.Text;
+using System.Linq;
 
 public class Hunter : Actor
 {
@@ -66,15 +69,38 @@ public class Hunter : Actor
         }
     }
 
-    public override void SaveResults(bool hasWon)
+    public override void SaveResults(int sampleId)
     {
-        string toWrite = "";
-        for (int i = 0; i < statesOfThisGame.Count; i++)
-        {
-            toWrite += System.Text.Encoding.UTF8.GetString(statesOfThisGame[i].First);
-        }
-        toWrite += "|" + (hasWon ? "w" : "l") + "\n";
+        System.IO.File.WriteAllText("../hunter" + sampleId + ".txt", ActorGenes.ToString());
+    }
 
-        System.IO.File.AppendAllText("../hunter.txt", toWrite);
+    public override void LoadResults(int sampleId)
+    {
+        ActorGenes = new GenesEncap();
+        string[] lines = System.IO.File.ReadAllLines("../hunter" + sampleId + ".txt");
+        for (int i = 0; i < lines.Length; i++)
+        {
+            string[] stateParts = lines[i].Split(':');
+            byte[] state = GetBytes(stateParts[0]);
+
+            string[] actionEvaluationParts = stateParts[1].Split(';');
+            for (int j = 0; j < actionEvaluationParts.Length; j++)
+            {
+                string[] evaluation = actionEvaluationParts[j].Split(',');
+                int actionId = Int32.Parse(evaluation[0]);
+                float value = float.Parse(evaluation[1]);
+                if (ActorGenes.Genes.ContainsKey(state))
+                {
+                    ActorGenes.Genes[state].Add(Action.GetAction(actionId, this), value);
+                }
+                else
+                {
+                    Dictionary<Action, float> actionValues = new Dictionary<Action, float>();
+                    actionValues.Add(Action.GetAction(actionId, this), value);
+                    ActorGenes.Add(state, actionValues);
+                }
+            }
+
+        }
     }
 }

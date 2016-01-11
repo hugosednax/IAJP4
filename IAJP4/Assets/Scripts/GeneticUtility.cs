@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 
-class GeneticUtility
+static class GeneticUtility
 {
 
     public static GenesEncap Crossover(Actor actor1, Actor actor2)
@@ -56,6 +56,5 @@ class GeneticUtility
             }
         }
     }
-
 }
 

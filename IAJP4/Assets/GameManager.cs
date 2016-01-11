@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour {
             worldPhysical.transform.parent = this.transform;
             worldInstance = worldPhysical.GetComponent<World>();
             worldInstance.setGameManager(this);
+            worldInstance.setId(i);
             worlds.Add(worldInstance);
         }
 	}
@@ -30,8 +31,10 @@ public class GameManager : MonoBehaviour {
     public void EndedWorld()
     {
         finishedSamples++;
+        Debug.Log("One world finished");
         if (finishedSamples == worlds.Count)
         {
+            Debug.Log("Resetting all");
             for (int i = 0; i < numberOfWorlds; i++)
             {
                 worlds[i].ResetWorld();

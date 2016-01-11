@@ -22,7 +22,7 @@ public class World : MonoBehaviour
     private bool debug = true;
     [SerializeField]
     private int  generation = 0;
-    [SerializeField]
+    //[SerializeField]
     private float tickTimer = 0.01f;
 
     public const int SPRINT_LENGTH = 2;
@@ -32,9 +32,10 @@ public class World : MonoBehaviour
     Hunter hunter;
     Prey prey;
     int turn = 0;
+    int id = 0;
 
-    Text hunterEnergy;
-    Text preyEnergy;
+    //Text hunterEnergy;
+    //Text preyEnergy;
     float elapsedTime = 0f;
 
     GameManager manager;
@@ -68,8 +69,8 @@ public class World : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
-        hunterEnergy = GameObject.Find("HunterEnergy").GetComponent<Text>();
-        preyEnergy = GameObject.Find("PreyEnergy").GetComponent<Text>();
+        //hunterEnergy = GameObject.Find("HunterEnergy").GetComponent<Text>();
+        //preyEnergy = GameObject.Find("PreyEnergy").GetComponent<Text>();
     }
 
     void Start()
@@ -243,25 +244,23 @@ public class World : MonoBehaviour
                     prey.Turn();
                 else hunter.Turn();
                 turn = (turn + 1) % 2;
-                hunterEnergy.text = "Hunter Energy: " + hunter.Energy;
-                preyEnergy.text = "Prey Energy: " + prey.Energy;
+                //hunterEnergy.text = "Hunter Energy: " + hunter.Energy;
+                //preyEnergy.text = "Prey Energy: " + prey.Energy;
             }
             else
             {
                 string winner = "None";
                 if (hunter.Energy > 0)
                 {
-                    hunter.SaveResults(true);
-                    prey.SaveResults(false);
                     winner = "Hunter";
                 }
                 else
                 {
-                    prey.SaveResults(true);
-                    hunter.SaveResults(false);
                     winner = "Prey;";
                 }
-                Debug.Log("reset by stamina");
+                //Debug.Log("reset by stamina");
+                hunter.SaveResults(id);
+                prey.SaveResults(id);
                 EndGame();
                 Debug.Log("Game Over. Winner: " + winner);
             }
@@ -448,4 +447,8 @@ public class World : MonoBehaviour
         prey.Death();
     }
 
+    public void setId(int id)
+    {
+        this.id = id;
+    }
 }

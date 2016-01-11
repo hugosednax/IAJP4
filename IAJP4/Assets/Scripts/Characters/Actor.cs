@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using WorldDefinition;
+using System;
 
 public abstract class Actor {
 
@@ -17,7 +18,6 @@ public abstract class Actor {
     public GenesEncap ActorGenes { get; set; }
     public List<Action> Actions { protected set; get; }
 
-    protected List<Pair<byte[], int>> statesOfThisGame;
     /*
         enemyDown, enemyUp, enemyLeft, enemyRight,
         trapDown, trapUp, trapLeft, trapRight,
@@ -31,7 +31,6 @@ public abstract class Actor {
         this.type = type;
         ActorGenes = new GenesEncap();
         this.world = world;
-        statesOfThisGame = new List<Pair<byte[], int>>();
         //percisa de valores randomizados
     }
 
@@ -42,7 +41,6 @@ public abstract class Actor {
         this.type = type;
         ActorGenes = genesFromPappi;
         this.world = world;
-        statesOfThisGame = new List<Pair<byte[], int>>();
     }
 
     public Dictionary<Action, float> getGeneFromState(byte[] state)
@@ -72,7 +70,8 @@ public abstract class Actor {
     }
 
     public abstract void HandleCollision(typeOfCell typeOfCell);
-    public abstract void SaveResults(bool hasWon);
+    public abstract void SaveResults(int sampleId);
+    public abstract void LoadResults(int sampleId);
 
     public void Turn()
     {
@@ -97,13 +96,19 @@ public abstract class Actor {
                     isValid = action.CanExecute(world);
                     if (isValid)
                     {
-                        statesOfThisGame.Add(new Pair<byte[], int>(state, action.Id));
                         action.Execute(world); 
                         break;
                     }
                 }
             }
         }
+    }
+
+    public static byte[] GetBytes(string str)
+    {
+        byte[] bytes = new byte[str.Length * sizeof(char)];
+        System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
+        return bytes;
     }
 }
 
