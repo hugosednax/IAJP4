@@ -50,8 +50,8 @@ public class GameManager : MonoBehaviour {
             preyz.Add(worlds[i].Prey);
         }
 
-        List<Hunter> SortedHunterList = hunters.OrderBy(o => o.Energy).ToList(); //can be changed to be better optimized
-        List<Prey> SortedPreyList = preyz.OrderBy(o => o.Energy).ToList();
+        List<Hunter> SortedHunterList = hunters.OrderByDescending(o => o.Energy).ToList(); //can be changed to be better optimized
+        List<Prey> SortedPreyList = preyz.OrderByDescending(o => o.Energy).ToList();
 
         //creating the best hunters
         List<GenesEncap> bestHunters = new List<GenesEncap>();

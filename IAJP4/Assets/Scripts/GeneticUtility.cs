@@ -32,7 +32,7 @@ class GeneticUtility
 
         foreach (KeyValuePair<byte[], Dictionary<Action, float>> gene in actor2.ActorGenes.Genes)
         {
-            if (!actor2.ActorGenes.ContainsKey(gene.Key))
+            if (!actor1.ActorGenes.ContainsKey(gene.Key))
             {
                 newActor.Add(gene.Key, gene.Value);
             }
@@ -48,11 +48,11 @@ class GeneticUtility
         {
             if ((float)r.NextDouble() <= 0.015f)
             {
-                    Dictionary<Action, float> newGene = new Dictionary<Action, float>();
-                    foreach (KeyValuePair<Action, float> actionValuePair in gene.Value)
-                    {
-                        genes.Genes[gene.Key][actionValuePair.Key] = (float)r.NextDouble();
-                    }
+                Dictionary<Action, float> newGene = new Dictionary<Action, float>();
+                foreach (KeyValuePair<Action, float> actionValuePair in gene.Value)
+                {
+                    genes.Genes[gene.Key][actionValuePair.Key] = (float)r.NextDouble();
+                }
             }
         }
     }

@@ -381,14 +381,14 @@ public class World : MonoBehaviour
         }
         if (actor.type == Actor.typeofActor.hunter)
         {
-            states[0] = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.prey);
+            states[0] = detectCellNearby(actor.PosX, actor.PosY, 4, typeOfCell.prey);
         }
         else
         {
-            states[0] = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.hunter);
+            states[0] = detectCellNearby(actor.PosX, actor.PosY, 4, typeOfCell.hunter);
         }
         
-        states[1] = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.plant);
+        states[1] = detectCellNearby(actor.PosX, actor.PosY, 4, typeOfCell.plant);
         states[2] = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.trap);
 
         return states;
