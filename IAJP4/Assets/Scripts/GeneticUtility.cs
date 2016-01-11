@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 
 static class GeneticUtility
@@ -44,7 +45,6 @@ static class GeneticUtility
 
     public static void mutate(GenesEncap genes)
     {
-        
         System.Random r = new System.Random();
         GenesEncap modified = new GenesEncap();
 
@@ -75,7 +75,6 @@ static class GeneticUtility
             genes.Genes[keyOfModified[i]] = modified.Genes[keyOfModified[i]];
 
         }
-        
     }
 
 

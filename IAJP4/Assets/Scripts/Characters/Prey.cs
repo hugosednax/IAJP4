@@ -59,7 +59,7 @@ public class Prey : Actor {
 
     public override void SaveResults(int sampleId)
     {
-        System.IO.File.WriteAllText("../prey" + sampleId + ".txt", ActorGenes.ToString());
+       // System.IO.File.WriteAllText("../prey" + sampleId + ".txt", ActorGenes.ToString());
     }
 
     public override void LoadResults(int sampleId)
@@ -90,5 +90,9 @@ public class Prey : Actor {
             }
 
         }
+        
     }
+
+
+
 }

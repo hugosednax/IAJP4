@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour {
             worldPhysical = (GameObject)Instantiate(worldPrefab, worldPrefab.transform.position + new Vector3(i*300, 0,0)
                 , worldPrefab.transform.rotation);
             worldPhysical.transform.parent = this.transform;
+            worldPhysical.transform.name = "WorldNumber_"+i;
             worldInstance = worldPhysical.GetComponent<World>();
             worldInstance.setGameManager(this);
             worldInstance.setId(i);
@@ -28,9 +29,9 @@ public class GameManager : MonoBehaviour {
         }
 	}
 
-    public void EndedWorld()
+    public void EndedWorld(string name)
     {
-        Debug.Log("One world finished");
+        Debug.Log(name + " finished");
         finishedSamples++;
         if (finishedSamples == worlds.Count)
         {
@@ -42,11 +43,13 @@ public class GameManager : MonoBehaviour {
             }
             finishedSamples = 0;
         }
+        
     }
 
 
     private Pair<List<GenesEncap>, List<GenesEncap>> StartNewGen()
     {
+        
         List<Hunter> hunters = new List<Hunter>();
         List<Prey> preyz = new List<Prey>();
         for (int i = 0; i < numberOfWorlds; i++)
@@ -82,7 +85,7 @@ public class GameManager : MonoBehaviour {
                 bestPreys.Add(newGenes);
             }
         }
-
+       
         return new Pair<List<GenesEncap>, List<GenesEncap>>(bestHunters, bestPreys);
     }
 

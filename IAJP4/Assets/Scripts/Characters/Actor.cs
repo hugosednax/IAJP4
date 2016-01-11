@@ -58,16 +58,17 @@ public abstract class Actor {
             float cumProb = 0;
             for (int i = 0; i < Actions.Count; i++)
             {
+                
                 float newProb = (float)r.NextDouble();
                 cumProb += newProb;
                 gene.Add(Actions[i], newProb);
             }
-            /*
+            
             for (int i = 0; i < Actions.Count; i++)
             {
                 gene[Actions[i]] = gene[Actions[i]] / cumProb;
-            }*/
-
+            }
+            
             ActorGenes.Add(state, gene);
         }
         return gene;
@@ -106,6 +107,7 @@ public abstract class Actor {
                     isValid = action.CanExecute(world);
                     if (isValid)
                     {
+                        //Debug.Log(action.ToString());
                         action.Execute(world); 
                         break;
                     }

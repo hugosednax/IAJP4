@@ -33,6 +33,7 @@ public class World : MonoBehaviour
     Prey prey;
     int turn = 0;
     int id = 0;
+    bool finished = false;
 
     //Text hunterEnergy;
     //Text preyEnergy;
@@ -111,25 +112,36 @@ public class World : MonoBehaviour
                 GetTypeOfCell(preyX, preyY) != typeOfCell.normal;
         }
 
-        if(hunterGenesFromPappi == null)
+        Debug.Log("reset "+transform.name);
+        if (hunterGenesFromPappi == null)
             hunter = new Hunter(hunterX, hunterY, this);
         else
+        {
+            Debug.Log("2nd");
             hunter = new Hunter(hunterX, hunterY, this, hunterGenesFromPappi);
+        }
         SetTypeOfCell(hunterX, hunterY, typeOfCell.hunter);
 
         if (preyGenesFromPappi == null)
             prey = new Prey(preyX, preyY, this);
         else
+        {
+            Debug.Log("2nd");
             prey = new Prey(preyX, preyY, this, preyGenesFromPappi);
+        }
         SetTypeOfCell(preyX, preyY, typeOfCell.prey);
- 
+
         generation++;
     }
 
     public void EndGame()
     {
-        Debug.Log("call endWorld");
-        manager.EndedWorld();
+        //Debug.Log("End");
+        if (!finished)
+        {
+            manager.EndedWorld(transform.name);
+            finished = true;
+        }
     }
 
     public void setGameManager(GameManager gm) { manager = gm; }
