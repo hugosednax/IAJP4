@@ -354,39 +354,21 @@ public class World : MonoBehaviour
     {
         byte cellNearby = 0x00;
 
-        for(int i = 1; i < distance; i++)
+        for (int i = -distance; i < distance; i++)
         {
-            if (GetTypeOfCell(x + i, y) == typeToDetect)
+            for (int j = -distance; j < distance; j++)
             {
-                cellNearby |= 0x01;
-                break;
-            }
-        }
-
-        for (int i = 1; i < distance; i++)
-        {
-            if (GetTypeOfCell(x - i, y) == typeToDetect)
-            {
-                cellNearby |= 0x02;
-                break;
-            }
-        }
-
-        for (int i = 1; i < distance; i++)
-        {
-            if (GetTypeOfCell(x, y + i) == typeToDetect)
-            {
-                cellNearby |= 0x04;
-                break;
-            }
-        }
-
-        for (int i = 1; i < distance; i++)
-        {
-            if (GetTypeOfCell(x, y - i) == typeToDetect)
-            {
-                cellNearby |= 0x08;
-                break;
+                if (GetTypeOfCell(x + i, y + j) == typeToDetect)
+                {
+                    if( i > 0)
+                        cellNearby |= 0x01;
+                    if ( i < 0)
+                        cellNearby |= 0x02;
+                    if (j > 0)
+                        cellNearby |= 0x04;
+                    if (j < 0)
+                        cellNearby |= 0x08;
+                }
             }
         }
         return cellNearby;
