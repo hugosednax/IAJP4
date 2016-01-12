@@ -40,7 +40,7 @@ public class SummaryPrinter
     {
         return "There were " + NumberOfPlantsEaten + " plants eaten, out of these " + NumberOfPlantsEatenByHunter + " were eaten by hunters and " +
                NumberOfPlantsEatenByPrey + " were eaten by preys.\n There were " + NumberOfPlantsDetected + " plants that were detected, out of these " + NumberOfPlantsDetectedByHunter
-               + " were detected by a hunter and " + NumberOfPlantsDetectedByPrey + " were detected by a prey. There were "+ PlantNumber + " plants per world, making it total "+(TrapNumber* SampleNumber) +" plants ";
+               + " were detected by a hunter and " + NumberOfPlantsDetectedByPrey + " were detected by a prey. There were "+ PlantNumber + " plants per world, making it total "+(PlantNumber * SampleNumber) +" plants ";
     }
 
     public string SummarizeResults()
