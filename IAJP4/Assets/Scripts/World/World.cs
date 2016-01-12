@@ -22,7 +22,7 @@ public class World : MonoBehaviour
     private bool debug = true;
     [SerializeField]
     private int  generation = 0;
-    //[SerializeField]
+    [SerializeField]
     private float tickTimer = 0.01f;
 
     public const int SPRINT_LENGTH = 2;

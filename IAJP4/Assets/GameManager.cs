@@ -43,7 +43,6 @@ public class GameManager : MonoBehaviour {
         {
             finished &= finishedSamples[i];
         }
-
         if (finished)
         {
             //Debug.Log("Resetting all");
@@ -78,27 +77,20 @@ public class GameManager : MonoBehaviour {
         List<GenesEncap> bestHunters = new List<GenesEncap>();
         List<GenesEncap> bestPreys = new List<GenesEncap>();
 
-        for (int i = 0, samples = 0; i < SortedHunterList.Count && samples < numberOfWorlds; i++) 
+        for (int samples = 0; samples < numberOfWorlds; samples++)
         {
-            for (int j = i; j < SortedHunterList.Count && samples < numberOfWorlds; j++, samples++)
-            {
-                GenesEncap newGenes = GeneticUtility.Crossover(SortedHunterList[i], SortedHunterList[j]);
-                GeneticUtility.mutate(newGenes);
-                bestHunters.Add(newGenes);
-            }
+            GenesEncap newGenes = GeneticUtility.Crossover(SortedHunterList[0], SortedHunterList[1]);
+            GeneticUtility.mutate(newGenes);
+            bestHunters.Add(newGenes);
         }
 
-        //creating the best preys
-        for (int i = 0, samples = 0; i < SortedPreyList.Count && samples < numberOfWorlds; i++)
+        for (int samples = 0; samples < numberOfWorlds; samples++)
         {
-            for (int j = i; j < SortedPreyList.Count && samples < numberOfWorlds; j++, samples++)
-            {
-                GenesEncap newGenes = GeneticUtility.Crossover(SortedPreyList[i], SortedPreyList[j]);
-                GeneticUtility.mutate(newGenes);
-                bestPreys.Add(newGenes);
-            }
+            GenesEncap newGenes = GeneticUtility.Crossover(SortedPreyList[0], SortedPreyList[1]);
+            GeneticUtility.mutate(newGenes);
+            bestPreys.Add(newGenes);
         }
-       
+
         return new Pair<List<GenesEncap>, List<GenesEncap>>(bestHunters, bestPreys);
     }
 
