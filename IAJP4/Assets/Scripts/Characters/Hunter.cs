@@ -12,37 +12,38 @@ public class Hunter : Actor
     public Hunter(int posX, int posY, World world)
         : base(posX, posY, Actor.typeofActor.hunter, world)
     {
-        Actions = new List<Action>();
-        Actions.Add(new MoveDown(this));
-        Actions.Add(new MoveUp(this));
-        Actions.Add(new MoveLeft(this));
-        Actions.Add(new MoveRight(this));
-        Actions.Add(new Rest(this));
-        Actions.Add(new SprintDown(this));
-        Actions.Add(new SprintUp(this));
-        Actions.Add(new SprintLeft(this));
-        Actions.Add(new SprintRight(this));
+        Actions = new List<int>();
+        Actions.Add(0);
+        Actions.Add(1);
+        Actions.Add(2);
+        Actions.Add(3);
+        Actions.Add(4);
+        Actions.Add(5);
+        Actions.Add(6);
+        Actions.Add(7);
+        Actions.Add(8);
     }
 
     public Hunter(int posX, int posY, World world, GenesEncap genesFromPappi)
         : base(posX, posY, Actor.typeofActor.hunter, world, genesFromPappi)
     {
-        Actions = new List<Action>();
-        Actions.Add(new MoveDown(this));
-        Actions.Add(new MoveUp(this));
-        Actions.Add(new MoveLeft(this));
-        Actions.Add(new MoveRight(this));
-        Actions.Add(new Rest(this));
-        Actions.Add(new SprintDown(this));
-        Actions.Add(new SprintUp(this));
-        Actions.Add(new SprintLeft(this));
-        Actions.Add(new SprintRight(this));
+        Actions = new List<int>();
+        Actions.Add(0);
+        Actions.Add(1);
+        Actions.Add(2);
+        Actions.Add(3);
+        Actions.Add(4);
+        Actions.Add(5);
+        Actions.Add(6);
+        Actions.Add(7);
+        Actions.Add(8);
     }
 
     public override void HandleCollision(typeOfCell typeCell)
     {
         if (typeCell == typeOfCell.prey)
         {
+            Energy += 500;
             world.GetGameManager().summaryPrinter.NumberOfPreysEaten++;
             world.killPrey();
         }
@@ -62,7 +63,7 @@ public class Hunter : Actor
         {
             world.GetGameManager().summaryPrinter.NumberOfPlantsEaten++;
             world.GetGameManager().summaryPrinter.NumberOfPlantsEatenByHunter++;
-            Energy += 1;
+            Energy += 30;
         }
         else if (typeCell == typeOfCell.trap)
         {
@@ -94,12 +95,12 @@ public class Hunter : Actor
                 float value = float.Parse(evaluation[1]);
                 if (ActorGenes.Genes.ContainsKey(state))
                 {
-                    ActorGenes.Genes[state].Add(Action.GetAction(actionId, this), value);
+                    ActorGenes.Genes[state].Add(actionId, value);
                 }
                 else
                 {
-                    Dictionary<Action, float> actionValues = new Dictionary<Action, float>();
-                    actionValues.Add(Action.GetAction(actionId, this), value);
+                    Dictionary<int, float> actionValues = new Dictionary<int, float>();
+                    actionValues.Add(actionId, value);
                     ActorGenes.Add(state, actionValues);
                 }
             }

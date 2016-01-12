@@ -16,7 +16,7 @@ public abstract class Actor {
     public enum typeofActor { hunter, prey };
     public typeofActor type { private set; get; }
     public GenesEncap ActorGenes { get; set; }
-    public List<Action> Actions { protected set; get; }
+    public List<int> Actions { protected set; get; }
 
     /*
         enemyDown, enemyUp, enemyLeft, enemyRight,
@@ -43,9 +43,9 @@ public abstract class Actor {
         this.world = world;
     }
 
-    public Dictionary<Action, float> getGeneFromState(byte[] state)
+    public Dictionary<int, float> getGeneFromState(byte[] state)
     {
-        Dictionary<Action, float> gene;
+        Dictionary<int, float> gene;
 
         if (ActorGenes.Genes.ContainsKey(state))
         {
@@ -53,13 +53,16 @@ public abstract class Actor {
         }
         else
         {
-            gene = new Dictionary<Action, float>();
+            gene = new Dictionary<int, float>();
             System.Random r = new System.Random();
             float cumProb = 0.0f;
             for (int i = 0; i < Actions.Count; i++)
             {
-                
+
                 float newProb = (float)r.NextDouble();
+                if (newProb <= 0.1)
+                    newProb = (float)r.NextDouble() * 5.0f;
+                else newProb = (float)r.NextDouble();
                 cumProb += newProb;
                 gene.Add(Actions[i], newProb);
             }
@@ -94,7 +97,7 @@ public abstract class Actor {
         //Actor.state state = chooseState(actor);
         byte[] state = world.getState(this);
 
-        Dictionary<Action, float> gene = getGeneFromState(state);
+        Dictionary<int, float> gene = getGeneFromState(state);
 
         System.Random r = new System.Random();
 
@@ -103,17 +106,17 @@ public abstract class Actor {
             //Debug.Log("whilevalid");
             float diceRoll = (float)r.NextDouble();
             float cumulative = 0.0f;
-            foreach (Action action in Actions)
+            for (int i = 0; i < Actions.Count; i++)
             {
-                if(gene.ContainsKey(action))
-                    cumulative += gene[action];
+                if (gene.ContainsKey(Actions[i]))
+                    cumulative += gene[Actions[i]];
                 if (diceRoll < cumulative)
                 {
-                    isValid = action.CanExecute(world);
+                    isValid = ActionManager.CanExecute(Actions[i], this, world);
                     if (isValid)
                     {
                         //Debug.Log(action.ToString());
-                        action.Execute(world); 
+                        ActionManager.Execute(Actions[i], this, world);
                         break;
                     }
                 }

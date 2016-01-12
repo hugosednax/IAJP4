@@ -2,15 +2,13 @@
 using System.Collections;
 using WorldDefinition;
 
-public class SprintDown : Action {
-
-    public SprintDown(Actor actor) : base(actor) { Id = 5; }
-
-    public override bool CanExecute(World world)
+public static class SprintDown
+{
+    public static bool CanExecute(Actor actor, World world)
     {
         for (int i = 1; i <= World.SPRINT_LENGTH; i++)
         {
-            if (world.GetTypeOfCell(actor.PosX, actor.PosY + i) == typeOfCell.obstacle && actor.Energy > 0)
+            if (world.GetTypeOfCell(actor.PosX, actor.PosY + i) == typeOfCell.obstacle || actor.Energy < 0)
             {
                 return false;
             }
@@ -18,7 +16,7 @@ public class SprintDown : Action {
         return true;
     }
 
-    public override void Execute(World world)
+    public static void Execute(Actor actor, World world)
     {
         world.MoveActor(actor, 0, World.SPRINT_LENGTH);
     }

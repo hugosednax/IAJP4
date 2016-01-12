@@ -6,9 +6,9 @@ using System.Text;
 
 public class GenesEncap
 {
-    Dictionary<byte[], Dictionary<Action, float>> genes;
+    Dictionary<byte[], Dictionary<int, float>> genes;
 
-    public Dictionary<byte[], Dictionary<Action, float>> Genes
+    public Dictionary<byte[], Dictionary<int, float>> Genes
     {
         get
         {
@@ -25,15 +25,15 @@ public class GenesEncap
 
     public GenesEncap()
     {
-        genes = new Dictionary<byte[], Dictionary<Action, float>>(new BaComp());
+        genes = new Dictionary<byte[], Dictionary<int, float>>(new BaComp());
     }
 
-    public GenesEncap(Dictionary<byte[], Dictionary<Action, float>> genes)
+    public GenesEncap(Dictionary<byte[], Dictionary<int, float>> genes)
     {
         this.genes = genes;
     }
 
-    public void Add(byte[] byteState, Dictionary<Action, float> dic) {
+    public void Add(byte[] byteState, Dictionary<int, float> dic) {
         if (genes.ContainsKey(byteState)) genes[byteState] = dic;
         else genes.Add(byteState, dic);
     }
@@ -44,7 +44,7 @@ public class GenesEncap
     {
         string ret = "";
         List<byte[]> keys = new List<byte[]>(Genes.Keys);
-        List<KeyValuePair<Action, float>> actions;
+        List<KeyValuePair<int, float>> actions;
         for (int i = 0; i < keys.Count; i++)
         {
             byte[] geneState = keys[i];
@@ -52,7 +52,7 @@ public class GenesEncap
             actions = Genes[geneState].ToList();
             for (int j = 0; j < actions.Count; j++)
             {
-                ret += "" + actions[j].Key.Id + "," + actions[j].Value + ";";
+                ret += "" + actions[j].Key + "," + actions[j].Value + ";";
             }
             ret += "\n";
         }

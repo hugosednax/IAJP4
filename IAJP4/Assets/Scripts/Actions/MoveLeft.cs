@@ -2,20 +2,18 @@
 using System.Collections;
 using WorldDefinition;
 
-public class MoveLeft : Action {
-
-    public MoveLeft(Actor actor) : base(actor) { Id = 1; }
-
-    public override bool CanExecute(World world)
+public static class MoveLeft
+{
+    public static bool CanExecute(Actor actor, World world)
     {
-        if (world.GetTypeOfCell(actor.PosX - 1, actor.PosY) == typeOfCell.obstacle && actor.Energy > 0)
+        if (world.GetTypeOfCell(actor.PosX - 1, actor.PosY) == typeOfCell.obstacle || actor.Energy < 0)
         {
             return false;
         }
         return true;
     }
 
-    public override void Execute(World world)
+    public static void Execute(Actor actor, World world)
     {
         world.MoveActor(actor, -1, 0);
     }

@@ -2,16 +2,14 @@
 using System.Collections;
 using WorldDefinition;
 
-public class Rest : Action {
-
-    public Rest(Actor actor) : base(actor) { Id = 4; }
-
-    public override bool CanExecute(World world)
+public static class Rest
+{
+    public static bool CanExecute(Actor actor, World world)
     {
         return true;
     }
 
-    public override void Execute(World world)
+    public static void Execute(Actor actor, World world)
     {
         return;
     }

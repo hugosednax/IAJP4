@@ -11,23 +11,23 @@ public class Prey : Actor {
     public Prey(int posX, int posY, World world)
         : base(posX, posY, Actor.typeofActor.prey, world)
     {
-        Actions = new List<Action>();
-        Actions.Add(new MoveDown(this));
-        Actions.Add(new MoveUp(this));
-        Actions.Add(new MoveLeft(this));
-        Actions.Add(new MoveRight(this));
-        Actions.Add(new Rest(this));
+        Actions = new List<int>();
+        Actions.Add(0);
+        Actions.Add(1);
+        Actions.Add(2);
+        Actions.Add(3);
+        Actions.Add(4);
     }
 
     public Prey(int posX, int posY, World world, GenesEncap genesFromPappi)
         : base(posX, posY, Actor.typeofActor.prey, world, genesFromPappi)
     {
-        Actions = new List<Action>();
-        Actions.Add(new MoveDown(this));
-        Actions.Add(new MoveUp(this));
-        Actions.Add(new MoveLeft(this));
-        Actions.Add(new MoveRight(this));
-        Actions.Add(new Rest(this));
+        Actions = new List<int>();
+        Actions.Add(0);
+        Actions.Add(1);
+        Actions.Add(2);
+        Actions.Add(3);
+        Actions.Add(4);
     }
 
     public override void HandleCollision(typeOfCell typeCell)
@@ -38,6 +38,7 @@ public class Prey : Actor {
         }
         else if (typeCell == typeOfCell.hunter)
         {
+            world.Hunter.Energy += 500;
             Death();
         }
         else if (typeCell == typeOfCell.normal)
@@ -51,7 +52,7 @@ public class Prey : Actor {
         {
             world.GetGameManager().summaryPrinter.NumberOfPlantsEaten++;
             world.GetGameManager().summaryPrinter.NumberOfPlantsEatenByPrey++;
-            Energy += 3;
+            Energy += 60;
         }
         else if (typeCell == typeOfCell.trap)
         {
@@ -83,12 +84,12 @@ public class Prey : Actor {
                 float value = float.Parse(evaluation[1]);
                 if (ActorGenes.Genes.ContainsKey(state))
                 {
-                    ActorGenes.Genes[state].Add(Action.GetAction(actionId, this), value);
+                    ActorGenes.Genes[state].Add(actionId, value);
                 }
                 else
                 {
-                    Dictionary<Action, float> actionValues = new Dictionary<Action, float>();
-                    actionValues.Add(Action.GetAction(actionId, this), value);
+                    Dictionary<int, float> actionValues = new Dictionary<int, float>();
+                    actionValues.Add(actionId, value);
                     ActorGenes.Add(state, actionValues);
                 }
             }
