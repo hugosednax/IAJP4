@@ -7,12 +7,19 @@ public class GameManager : MonoBehaviour {
 
     public GameObject worldPrefab;
     public int numberOfWorlds;
+    public bool logSummaryInfo = true;
+
+    [SerializeField]
+    private int generations;
 
     private List<World> worlds;
     private bool[] finishedSamples;
+    public SummaryPrinter summaryPrinter;
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+	{
+	    generations = 0;
         worlds = new List<World>();
         GameObject worldPhysical;
         World worldInstance;
@@ -32,6 +39,14 @@ public class GameManager : MonoBehaviour {
             worldInstance.setId(i);
             worlds.Add(worldInstance);
         }
+
+	    if (logSummaryInfo)
+	    {
+	        summaryPrinter = new SummaryPrinter();
+	        summaryPrinter.SampleNumber = numberOfWorlds;
+	        summaryPrinter.TrapNumber = worlds[0].numberOfTraps;
+	        summaryPrinter.PlantNumber = worlds[0].numberOfPlants;
+	    }
 	}
 
     public void EndedWorld(int id)
@@ -55,6 +70,12 @@ public class GameManager : MonoBehaviour {
             {
                 finishedSamples[i] = false;
             }
+
+            if (generations % 10 == 0)
+                summaryPrinter.SummarizeGeneration("generation"+ generations);
+            summaryPrinter.ResetVariables();
+
+            generations++;
         }
         
     }

@@ -21,8 +21,6 @@ public class World : MonoBehaviour
     [SerializeField]
     private bool debug = true;
     [SerializeField]
-    private int  generation = 0;
-    [SerializeField]
     private float tickTimer = 0.01f;
 
     public const int SPRINT_LENGTH = 2;
@@ -135,8 +133,6 @@ public class World : MonoBehaviour
         prey = new Prey(preyX, preyY, this);
         //Debug.Log("Finihsed!!!");
         SetTypeOfCell(preyX, preyY, typeOfCell.prey);
-
-        generation++;
     }
 
     public void EndGame()
@@ -151,6 +147,8 @@ public class World : MonoBehaviour
     }
 
     public void setGameManager(GameManager gm) { manager = gm; }
+
+    public GameManager GetGameManager() { return manager;}
 
     #region cellLogic
     public typeOfCell GetTypeOfCell(int i, int j)
@@ -376,7 +374,7 @@ public class World : MonoBehaviour
 
     public byte[] getState(Actor actor)
     {
-        byte[] states = new byte[3]; // 0 enemyD, 2 plant, 3 trap
+        byte[] states = new byte[3]; // 0 enemy, 2 plant, 3 trap
         for (int i = 0; i < states.Length; i++)
         {
             states[i] = 0x00;
@@ -392,6 +390,36 @@ public class World : MonoBehaviour
         
         states[1] = detectCellNearby(actor.PosX, actor.PosY, 4, typeOfCell.plant);
         states[2] = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.trap);
+
+        if (manager.logSummaryInfo)
+        {
+            if (states[1] != 0x00)
+            {
+                manager.summaryPrinter.NumberOfPlantsDetected++;
+                if (actor.type == Actor.typeofActor.hunter)
+                {
+                    manager.summaryPrinter.NumberOfPlantsDetectedByHunter++;
+                }
+                else
+                {
+                    manager.summaryPrinter.NumberOfPlantsDetectedByPrey++;
+
+                }
+            }
+            if (states[2] != 0x00)
+            {
+                manager.summaryPrinter.NumberOfTrapsDetected++;
+                if (actor.type == Actor.typeofActor.hunter)
+                {
+                    manager.summaryPrinter.NumberOfTrapsDetectedByHunter++;
+                }
+                else
+                {
+                    manager.summaryPrinter.NumberOfTrapsDetectedByPrey++;
+                }
+            }
+        }
+
 
         return states;
     }

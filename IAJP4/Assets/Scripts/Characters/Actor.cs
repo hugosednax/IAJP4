@@ -76,6 +76,10 @@ public abstract class Actor {
 
     public void Death()
     {
+        if (type == typeofActor.hunter)
+            world.GetGameManager().summaryPrinter.NumberOfWinsByPrey++;
+        if (type == typeofActor.prey)
+            world.GetGameManager().summaryPrinter.NumberOfWinsByHunter++;
         Energy = -999;
         world.EndGame();
     }

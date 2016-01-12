@@ -43,6 +43,7 @@ public class Hunter : Actor
     {
         if (typeCell == typeOfCell.prey)
         {
+            world.GetGameManager().summaryPrinter.NumberOfPreysEaten++;
             world.killPrey();
         }
         else if (typeCell == typeOfCell.hunter)
@@ -59,10 +60,14 @@ public class Hunter : Actor
         }
         else if (typeCell == typeOfCell.plant)
         {
+            world.GetGameManager().summaryPrinter.NumberOfPlantsEaten++;
+            world.GetGameManager().summaryPrinter.NumberOfPlantsEatenByHunter++;
             Energy += 1;
         }
         else if (typeCell == typeOfCell.trap)
         {
+            world.GetGameManager().summaryPrinter.NumberOfDeathsByTrap++;
+            world.GetGameManager().summaryPrinter. NumberOfHunterDeathsByTrap++;
             Death();
         }
     }

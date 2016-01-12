@@ -49,10 +49,14 @@ public class Prey : Actor {
         }
         else if (typeCell == typeOfCell.plant)
         {
+            world.GetGameManager().summaryPrinter.NumberOfPlantsEaten++;
+            world.GetGameManager().summaryPrinter.NumberOfPlantsEatenByPrey++;
             Energy += 3;
         }
         else if (typeCell == typeOfCell.trap)
         {
+            world.GetGameManager().summaryPrinter.NumberOfDeathsByTrap++;
+            world.GetGameManager().summaryPrinter.NumberOfPreyDeathsByTrap++;
             Death();
         }
     }
