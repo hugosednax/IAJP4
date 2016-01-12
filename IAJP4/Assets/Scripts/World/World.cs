@@ -87,7 +87,7 @@ public class World : MonoBehaviour
         }
         spacing = this.GetComponent<Renderer>().bounds.size.x / (float)sizeX;
 
-        PopulateObstacles(1, 1);
+        //PopulateObstacles(1, 1);
         PopulateTraps(numberOfTraps);
         PopulatePlants(numberOfPlants);
 
@@ -333,17 +333,25 @@ public class World : MonoBehaviour
 
     void PopulatePlants(int nPlants)
     {
+        bool notPlaceable = true;
+        int selectedLocation = 0;
+        while (notPlaceable)
+        {
+            selectedLocation = Random.Range(0, sizeX * sizeY - 1);
+            notPlaceable = GetTypeOfCell(selectedLocation) != typeOfCell.normal;
+        }
         for (int i = 0; i < nPlants; i++)
         {
-            int selectedLocation = Random.Range(0, sizeX * sizeY - 1);
-            bool notPlaceable = GetTypeOfCell(selectedLocation) != typeOfCell.normal;
+            int selectedLocationX = 0;
+            int selectedLocationY = 0;
+            notPlaceable = true;
             while (notPlaceable)
             {
-                selectedLocation = Random.Range(0, sizeX * sizeY - 1);
-                notPlaceable = GetTypeOfCell(selectedLocation) != typeOfCell.normal;
-                //Debug.Log("worldwhilenotplace3");
+                selectedLocationX = (selectedLocation % sizeX) - Random.Range(0, 3) + Random.Range(0, 3);
+                selectedLocationY = (selectedLocation / sizeX) - Random.Range(0, 3) + Random.Range(0, 3);
+                notPlaceable = GetTypeOfCell(selectedLocationX, selectedLocationY) != typeOfCell.normal;
             }
-            SetTypeOfCell(selectedLocation, typeOfCell.plant);
+            SetTypeOfCell(selectedLocationX, selectedLocationY, typeOfCell.plant);
         }
     }
     #endregion
@@ -381,14 +389,14 @@ public class World : MonoBehaviour
         }
         if (actor.type == Actor.typeofActor.hunter)
         {
-            states[0] = detectCellNearby(actor.PosX, actor.PosY, 4, typeOfCell.prey);
+            states[0] = detectCellNearby(actor.PosX, actor.PosY, 10, typeOfCell.prey);
         }
         else
         {
-            states[0] = detectCellNearby(actor.PosX, actor.PosY, 4, typeOfCell.hunter);
+            states[0] = detectCellNearby(actor.PosX, actor.PosY, 10, typeOfCell.hunter);
         }
         
-        states[1] = detectCellNearby(actor.PosX, actor.PosY, 4, typeOfCell.plant);
+        states[1] = detectCellNearby(actor.PosX, actor.PosY, 15, typeOfCell.plant);
         states[2] = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.trap);
 
         if (manager.logSummaryInfo)
