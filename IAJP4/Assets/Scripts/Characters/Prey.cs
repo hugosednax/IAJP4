@@ -59,12 +59,12 @@ public class Prey : Actor {
 
     public override void SaveResults(int sampleId)
     {
-       // System.IO.File.WriteAllText("../prey" + sampleId + ".txt", ActorGenes.ToString());
+       System.IO.File.WriteAllText("../prey" + sampleId + ".txt", ActorGenes.ToString());
     }
 
     public override void LoadResults(int sampleId)
     {
-        /*ActorGenes = new GenesEncap();
+        ActorGenes = new GenesEncap();
         string[] lines = System.IO.File.ReadAllLines("../prey" + sampleId + ".txt");
         for (int i = 0; i < lines.Length; i++)
         {
@@ -89,7 +89,7 @@ public class Prey : Actor {
                 }
             }
 
-        }*/
+        }
         
     }
 

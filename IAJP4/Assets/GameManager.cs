@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour {
         bool finished = true;
         for (int i = 0; i < 4; i++)
         {
-            finished |= finishedSamples[i];
+            finished &= finishedSamples[i];
         }
 
         if (finished)
