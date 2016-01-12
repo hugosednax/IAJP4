@@ -84,7 +84,6 @@ public abstract class Actor {
         if (type == typeofActor.prey)
             world.GetGameManager().summaryPrinter.NumberOfWinsByHunter++;
         Energy = -999;
-        world.EndGame();
     }
 
     public abstract void HandleCollision(typeOfCell typeOfCell);

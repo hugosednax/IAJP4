@@ -133,6 +133,7 @@ public class World : MonoBehaviour
         prey = new Prey(preyX, preyY, this);
         //Debug.Log("Finihsed!!!");
         SetTypeOfCell(preyX, preyY, typeOfCell.prey);
+       // DebugDoubles(true);
     }
 
     public void EndGame()
@@ -144,6 +145,25 @@ public class World : MonoBehaviour
             manager.EndedWorld(id);
            // finished = true;
         //}
+    }
+
+    public void DebugDoubles(bool start)
+    {
+        if (this.hunter == null || this.prey == null)
+            Debug.Log("MISSING INSTANCES");
+        int hunter = 0;
+        int prey = 0;
+        for (int i = 0; i < world.Count; i++)
+        {
+            if (GetTypeOfCell(i) == typeOfCell.hunter)
+                hunter++;
+            if (GetTypeOfCell(i) == typeOfCell.prey)
+                prey++;
+        }
+        if (start && (hunter < 1 || prey < 1))
+            Debug.Log("MISSING");
+        if (hunter > 1 || prey > 1)
+            Debug.Log("DOUBLES");
     }
 
     public void setGameManager(GameManager gm) { manager = gm; }
@@ -236,6 +256,7 @@ public class World : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //DebugDoubles(false);
         elapsedTime += Time.deltaTime;
         if (Input.GetMouseButtonDown(0) && debug)
         {
@@ -374,6 +395,35 @@ public class World : MonoBehaviour
                         cellNearby |= 0x04;
                     if (j < 0)
                         cellNearby |= 0x08;
+
+                    if (manager.logSummaryInfo)
+                    {
+                        if (typeToDetect == typeOfCell.trap)
+                        {
+                            manager.summaryPrinter.NumberOfPlantsDetected++;
+                            if (GetTypeOfCell(x,y) == typeOfCell.hunter)
+                            {
+                                manager.summaryPrinter.NumberOfPlantsDetectedByHunter++;
+                            }
+                            else if (GetTypeOfCell(x, y) == typeOfCell.prey)
+                            {
+                                manager.summaryPrinter.NumberOfPlantsDetectedByPrey++;
+
+                            }
+                        }
+                        if (typeToDetect == typeOfCell.trap)
+                        {
+                            manager.summaryPrinter.NumberOfTrapsDetected++;
+                            if (GetTypeOfCell(x, y) == typeOfCell.hunter)
+                            {
+                                manager.summaryPrinter.NumberOfTrapsDetectedByHunter++;
+                            }
+                            else if (GetTypeOfCell(x, y) == typeOfCell.prey)
+                            {
+                                manager.summaryPrinter.NumberOfTrapsDetectedByPrey++;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -398,36 +448,6 @@ public class World : MonoBehaviour
         
         states[1] = detectCellNearby(actor.PosX, actor.PosY, 15, typeOfCell.plant);
         states[2] = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.trap);
-
-        if (manager.logSummaryInfo)
-        {
-            if (states[1] != 0x00)
-            {
-                manager.summaryPrinter.NumberOfPlantsDetected++;
-                if (actor.type == Actor.typeofActor.hunter)
-                {
-                    manager.summaryPrinter.NumberOfPlantsDetectedByHunter++;
-                }
-                else
-                {
-                    manager.summaryPrinter.NumberOfPlantsDetectedByPrey++;
-
-                }
-            }
-            if (states[2] != 0x00)
-            {
-                manager.summaryPrinter.NumberOfTrapsDetected++;
-                if (actor.type == Actor.typeofActor.hunter)
-                {
-                    manager.summaryPrinter.NumberOfTrapsDetectedByHunter++;
-                }
-                else
-                {
-                    manager.summaryPrinter.NumberOfTrapsDetectedByPrey++;
-                }
-            }
-        }
-
 
         return states;
     }
