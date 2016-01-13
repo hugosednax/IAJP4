@@ -5,7 +5,7 @@ using System;
 
 public static class ActionManager {
 
-    public static bool CanExecute(int actionId, Actor actor, World world)
+    public static bool CanExecute(int actionId, Actor actor, IWorld world)
     {
         if (actionId == 0) return MoveDown.CanExecute(actor, world);
         if (actionId == 1) return MoveLeft.CanExecute(actor, world);
@@ -19,7 +19,7 @@ public static class ActionManager {
         else throw new Exception("Action not recognized");
     }
 
-    public static void Execute(int actionId, Actor actor, World world)
+    public static void Execute(int actionId, Actor actor, IWorld world)
     {
         if (actionId == 0) MoveDown.Execute(actor, world);
         else if (actionId == 1) MoveLeft.Execute(actor, world);

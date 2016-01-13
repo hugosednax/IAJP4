@@ -8,7 +8,7 @@ using System.Text;
 
 public class Prey : Actor {
 
-    public Prey(int posX, int posY, World world)
+    public Prey(int posX, int posY, IWorld world)
         : base(posX, posY, Actor.typeofActor.prey, world)
     {
         Actions = new List<int>();
@@ -19,7 +19,7 @@ public class Prey : Actor {
         Actions.Add(4);
     }
 
-    public Prey(int posX, int posY, World world, GenesEncap genesFromPappi)
+    public Prey(int posX, int posY, IWorld world, GenesEncap genesFromPappi)
         : base(posX, posY, Actor.typeofActor.prey, world, genesFromPappi)
     {
         Actions = new List<int>();
@@ -50,14 +50,19 @@ public class Prey : Actor {
         }
         else if (typeCell == typeOfCell.plant)
         {
-            world.GetGameManager().summaryPrinter.NumberOfPlantsEaten++;
-            world.GetGameManager().summaryPrinter.NumberOfPlantsEatenByPrey++;
+            if (world is GeneticWorld)
+            {
+                ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfPlantsEaten++;
+                ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfPlantsEatenByPrey++;
+            }
             Energy += 60;
         }
         else if (typeCell == typeOfCell.trap)
         {
-            world.GetGameManager().summaryPrinter.NumberOfDeathsByTrap++;
-            world.GetGameManager().summaryPrinter.NumberOfPreyDeathsByTrap++;
+            if(world is GeneticWorld) {
+                ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfDeathsByTrap++;
+                ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfPreyDeathsByTrap++;
+            }
             Death();
         }
     }
@@ -77,9 +82,10 @@ public class Prey : Actor {
             byte[] state = GetBytes(stateParts[0]);
 
             string[] actionEvaluationParts = stateParts[1].Split(';');
-            for (int j = 0; j < actionEvaluationParts.Length; j++)
+            for (int j = 0; j < actionEvaluationParts.Length - 1; j++)
             {
                 string[] evaluation = actionEvaluationParts[j].Split(',');
+                Debug.Log(evaluation[0]);
                 int actionId = Int32.Parse(evaluation[0]);
                 float value = float.Parse(evaluation[1]);
                 if (ActorGenes.Genes.ContainsKey(state))

@@ -6,7 +6,7 @@ using System;
 public abstract class Actor {
 
     [SerializeField]protected int energy = 100;
-    protected World world;
+    protected IWorld world;
     public int Energy {
         get { return energy; }
         set { energy = value; }
@@ -18,13 +18,15 @@ public abstract class Actor {
     public GenesEncap ActorGenes { get; set; }
     public List<int> Actions { protected set; get; }
 
+    public const int SPRINT_LENGTH = 2;
+
     /*
         enemyDown, enemyUp, enemyLeft, enemyRight,
         trapDown, trapUp, trapLeft, trapRight,
         plantDown, plantUp, plantLeft, plantRight
     */
 
-    public Actor(int posX, int posY, typeofActor type, World world)
+    public Actor(int posX, int posY, typeofActor type, IWorld world)
     {
         this.PosX = posX;
         this.PosY = posY;
@@ -34,7 +36,7 @@ public abstract class Actor {
         //percisa de valores randomizados
     }
 
-    public Actor(int posX, int posY, typeofActor type, World world, GenesEncap genesFromPappi)
+    public Actor(int posX, int posY, typeofActor type, IWorld world, GenesEncap genesFromPappi)
     {
         this.PosX = posX;
         this.PosY = posY;
@@ -79,10 +81,13 @@ public abstract class Actor {
 
     public void Death()
     {
-        if (type == typeofActor.hunter)
-            world.GetGameManager().summaryPrinter.NumberOfWinsByPrey++;
-        if (type == typeofActor.prey)
-            world.GetGameManager().summaryPrinter.NumberOfWinsByHunter++;
+        if (world is GeneticWorld)
+        {
+            if (type == typeofActor.hunter)
+                ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfWinsByPrey++;
+            if (type == typeofActor.prey)
+                ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfWinsByHunter++;
+        }
         Energy = -999;
     }
 

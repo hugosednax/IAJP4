@@ -3,9 +3,9 @@ using System.Collections;
 using WorldDefinition;
 
 public class SprintUp {
-    public static bool CanExecute(Actor actor, World world)
+    public static bool CanExecute(Actor actor, IWorld world)
     {
-        for (int i = 1; i <= World.SPRINT_LENGTH; i++)
+        for (int i = 1; i <= Actor.SPRINT_LENGTH; i++)
         {
             if (world.GetTypeOfCell(actor.PosX, actor.PosY - i) == typeOfCell.obstacle || actor.Energy < 0)
             {
@@ -15,8 +15,8 @@ public class SprintUp {
         return true;
     }
 
-    public static void Execute(Actor actor, World world)
+    public static void Execute(Actor actor, IWorld world)
     {
-        world.MoveActor(actor, 0, -World.SPRINT_LENGTH);
+        world.MoveActor(actor, 0, -Actor.SPRINT_LENGTH);
     }
 }

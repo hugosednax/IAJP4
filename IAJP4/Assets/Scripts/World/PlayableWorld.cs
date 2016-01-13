@@ -4,12 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using WorldDefinition;
 
-namespace WorldDefinition
-{
-    public enum typeOfCell { obstacle, normal, trap, plant, hunter, prey };
-}
-
-public class World : MonoBehaviour
+public class PlayableWorld : MonoBehaviour, IWorld
 {
 
     [SerializeField]
@@ -23,7 +18,7 @@ public class World : MonoBehaviour
     [SerializeField]
     private float tickTimer = 0.01f;
 
-    public const int SPRINT_LENGTH = 2;
+    
     public int numberOfTraps = 5;
     public int numberOfPlants = 3;
     List<typeOfCell> world;
@@ -32,23 +27,32 @@ public class World : MonoBehaviour
     int turn = 0;
     int id = 0;
     bool finished = false;
+    private Actor player;
+    private Actor enemy;
 
     //Text hunterEnergy;
     //Text preyEnergy;
     float elapsedTime = 0f;
 
-    GameManager manager;
+    HumanPlayManager manager;
 
     public Hunter Hunter
     {
         get
         {
-            return hunter;
+            return player.type == Actor.typeofActor.hunter? (Hunter)player : (Hunter)enemy;
         }
 
         set
         {
-            hunter = value;
+            if(player.type == Actor.typeofActor.hunter)
+            {
+                player = value;
+            }
+            else
+            {
+                enemy = value;
+            }
         }
     }
 
@@ -56,30 +60,24 @@ public class World : MonoBehaviour
     {
         get
         {
-            return prey;
+            return player.type == Actor.typeofActor.prey ? (Prey)player : (Prey)enemy;
         }
 
         set
         {
-            prey = value;
+            if (player.type == Actor.typeofActor.prey)
+            {
+                player = value;
+            }
+            else
+            {
+                enemy = value;
+            }
         }
-    }
-
-    // Use this for initialization
-    void Awake()
-    {
-        //hunterEnergy = GameObject.Find("HunterEnergy").GetComponent<Text>();
-        //preyEnergy = GameObject.Find("PreyEnergy").GetComponent<Text>();
     }
 
     void Start()
     {
-        ResetWorld();
-    }
-
-    public void ResetWorld(GenesEncap hunterGenesFromPappi = null, GenesEncap preyGenesFromPappi = null)
-    {
-        finished = false;
         world = new List<typeOfCell>();
         for (int i = 0; i < sizeX * sizeY; i++)
         {
@@ -110,65 +108,84 @@ public class World : MonoBehaviour
             //Debug.Log("worldwhilenotplace");
         }
 
-        //Debug.Log("reset "+transform.name);
-        if (hunterGenesFromPappi == null){
-            hunter = new Hunter(hunterX, hunterY, this);
+        if(manager.playerType == typeOfPlayer.hunter)
+        {
+            player = new Hunter(hunterX, hunterY, this);
+            enemy = new Prey(preyX, preyY, this);
         }
         else
         {
-            hunter = new Hunter(hunterX, hunterY, this, hunterGenesFromPappi);
+            enemy = new Hunter(hunterX, hunterY, this);
+            player = new Prey(preyX, preyY, this);
         }
-        
+        enemy.LoadResults(0);
         SetTypeOfCell(hunterX, hunterY, typeOfCell.hunter);
-
-        if (preyGenesFromPappi == null)
-        {
-            prey = new Prey(preyX, preyY, this);
-        }
-        else
-        {
-            prey = new Prey(preyX, preyY, this, preyGenesFromPappi);
-        }
-        
-        
-        //Debug.Log("Finihsed!!!");
         SetTypeOfCell(preyX, preyY, typeOfCell.prey);
-       // DebugDoubles(true);
+
     }
 
-    public void EndGame()
+    void Update()
     {
-        //Debug.Log("End");
-        //Debug.Log("World + " + id + " trying to end game");
-        /*if (!finished)
-        {*/
-            manager.EndedWorld(id);
-           // finished = true;
-        //}
-    }
-
-    public void DebugDoubles(bool start)
-    {
-        if (this.hunter == null || this.prey == null)
-            Debug.Log("MISSING INSTANCES");
-        int hunter = 0;
-        int prey = 0;
-        for (int i = 0; i < world.Count; i++)
+       
+        elapsedTime += Time.deltaTime;
+        
+        //GAME CYCLE
+        if (elapsedTime > tickTimer)
         {
-            if (GetTypeOfCell(i) == typeOfCell.hunter)
-                hunter++;
-            if (GetTypeOfCell(i) == typeOfCell.prey)
-                prey++;
+            elapsedTime = 0f;
+            if (player.Energy > 0 && enemy.Energy > 0)
+            {
+                if (turn == 0)
+                {
+                    if (Input.GetKey(KeyCode.W))
+                    {
+                        if (ActionManager.CanExecute(0, player, this))
+                        {
+                            ActionManager.Execute(0, player, this);
+                            turn = (turn + 1) % 2;
+                        }
+                    }
+                    if (Input.GetKey(KeyCode.A))
+                    {
+                        if (ActionManager.CanExecute(1, player, this))
+                        {
+                            ActionManager.Execute(1, player, this);
+                            turn = (turn + 1) % 2;
+                        }
+                    }
+                    if (Input.GetKey(KeyCode.S))
+                    {
+                        if (ActionManager.CanExecute(3, player, this))
+                        {
+                            ActionManager.Execute(3, player, this);
+                            turn = (turn + 1) % 2;
+                        }
+                    }
+                    if (Input.GetKey(KeyCode.D))
+                    {
+                        if (ActionManager.CanExecute(2, player, this))
+                        {
+                            ActionManager.Execute(2, player, this);
+                            turn = (turn + 1) % 2;
+                        }
+                    }
+                }
+                else
+                {
+                    enemy.Turn();
+                    turn = (turn + 1) % 2;
+                }
+            }
+            else
+            {
+                Debug.Log("Game Over");
+            }
         }
-        if (start && (hunter < 1 || prey < 1))
-            Debug.Log("MISSING");
-        if (hunter > 1 || prey > 1)
-            Debug.Log("DOUBLES");
     }
 
-    public void setGameManager(GameManager gm) { manager = gm; }
+    public void setGameManager(HumanPlayManager gm) { manager = gm; }
 
-    public GameManager GetGameManager() { return manager;}
+    public HumanPlayManager GetGameManager() { return manager; }
 
     #region cellLogic
     public typeOfCell GetTypeOfCell(int i, int j)
@@ -253,59 +270,6 @@ public class World : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        //DebugDoubles(false);
-        elapsedTime += Time.deltaTime;
-        if (Input.GetMouseButtonDown(0) && debug)
-        {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out hit))
-            {
-                //Debug.Log(hit.point);
-                //Debug.Log(WorldToCellMatrixIndex(hit.point));
-            }
-        }
-        if (Input.GetKeyUp(KeyCode.A))
-            MoveActor(hunter, -1, 0);
-
-        //GAME CYCLE
-        if (elapsedTime > tickTimer)
-        {
-            elapsedTime = 0f;
-            if (hunter.Energy > 0 && prey.Energy > 0)
-            {
-                if (turn == 0)
-                    prey.Turn();
-                else hunter.Turn();
-                turn = (turn + 1) % 2;
-                //hunterEnergy.text = "Hunter Energy: " + hunter.Energy;
-                //preyEnergy.text = "Prey Energy: " + prey.Energy;
-            }
-            else
-            {
-                /*string winner = "None";
-                if (hunter.Energy > 0)
-                {
-                    winner = "Hunter";
-                }
-                else
-                {
-                    winner = "Prey;";
-                }*/
-                //Debug.Log("reset by stamina");
-                hunter.SaveResults(id);
-                prey.SaveResults(id);
-                EndGame();
-                //Debug.Log("Game Over. Winner: " + winner);
-            }
-        }
-    }
-
-    #region populateEnvironment
     void PopulateObstacles(int nColumns, int nRows)
     {
 
@@ -375,7 +339,11 @@ public class World : MonoBehaviour
             SetTypeOfCell(selectedLocationX, selectedLocationY, typeOfCell.plant);
         }
     }
-    #endregion
+
+    public void killPrey()
+    {
+        Prey.Death();
+    }
 
     byte detectCellNearby(int x, int y, int distance, typeOfCell typeToDetect)
     {
@@ -387,43 +355,14 @@ public class World : MonoBehaviour
             {
                 if (GetTypeOfCell(x + i, y + j) == typeToDetect)
                 {
-                    if( i > 0)
+                    if (i > 0)
                         cellNearby |= 0x01;
-                    if ( i < 0)
+                    if (i < 0)
                         cellNearby |= 0x02;
                     if (j > 0)
                         cellNearby |= 0x04;
                     if (j < 0)
                         cellNearby |= 0x08;
-
-                    if (manager.logSummaryInfo)
-                    {
-                        if (typeToDetect == typeOfCell.trap)
-                        {
-                            manager.summaryPrinter.NumberOfPlantsDetected++;
-                            if (GetTypeOfCell(x,y) == typeOfCell.hunter)
-                            {
-                                manager.summaryPrinter.NumberOfPlantsDetectedByHunter++;
-                            }
-                            else if (GetTypeOfCell(x, y) == typeOfCell.prey)
-                            {
-                                manager.summaryPrinter.NumberOfPlantsDetectedByPrey++;
-
-                            }
-                        }
-                        if (typeToDetect == typeOfCell.trap)
-                        {
-                            manager.summaryPrinter.NumberOfTrapsDetected++;
-                            if (GetTypeOfCell(x, y) == typeOfCell.hunter)
-                            {
-                                manager.summaryPrinter.NumberOfTrapsDetectedByHunter++;
-                            }
-                            else if (GetTypeOfCell(x, y) == typeOfCell.prey)
-                            {
-                                manager.summaryPrinter.NumberOfTrapsDetectedByPrey++;
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -445,7 +384,7 @@ public class World : MonoBehaviour
         {
             states[0] = detectCellNearby(actor.PosX, actor.PosY, 10, typeOfCell.hunter);
         }
-        
+
         states[1] = detectCellNearby(actor.PosX, actor.PosY, 15, typeOfCell.plant);
         states[2] = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.trap);
 
@@ -499,15 +438,5 @@ public class World : MonoBehaviour
     {
         typeOfCell typeCell = GetTypeOfCell(posX, posY);
         actor.HandleCollision(typeCell);
-    }
-
-    public void killPrey()
-    {
-        prey.Death();
-    }
-
-    public void setId(int id)
-    {
-        this.id = id;
     }
 }

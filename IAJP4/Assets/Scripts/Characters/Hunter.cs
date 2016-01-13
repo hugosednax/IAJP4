@@ -9,7 +9,7 @@ using System.Linq;
 
 public class Hunter : Actor
 {
-    public Hunter(int posX, int posY, World world)
+    public Hunter(int posX, int posY, IWorld world)
         : base(posX, posY, Actor.typeofActor.hunter, world)
     {
         Actions = new List<int>();
@@ -24,7 +24,7 @@ public class Hunter : Actor
         Actions.Add(8);
     }
 
-    public Hunter(int posX, int posY, World world, GenesEncap genesFromPappi)
+    public Hunter(int posX, int posY, IWorld world, GenesEncap genesFromPappi)
         : base(posX, posY, Actor.typeofActor.hunter, world, genesFromPappi)
     {
         Actions = new List<int>();
@@ -44,7 +44,8 @@ public class Hunter : Actor
         if (typeCell == typeOfCell.prey)
         {
             Energy += 500;
-            world.GetGameManager().summaryPrinter.NumberOfPreysEaten++;
+            if(world is GeneticWorld)
+                ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfPreysEaten++;
             world.killPrey();
         }
         else if (typeCell == typeOfCell.hunter)
@@ -61,14 +62,19 @@ public class Hunter : Actor
         }
         else if (typeCell == typeOfCell.plant)
         {
-            world.GetGameManager().summaryPrinter.NumberOfPlantsEaten++;
-            world.GetGameManager().summaryPrinter.NumberOfPlantsEatenByHunter++;
+            if (world is GeneticWorld) {
+                ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfPlantsEaten++;
+                ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfPlantsEatenByHunter++;
+            }
             Energy += 30;
         }
         else if (typeCell == typeOfCell.trap)
         {
-            world.GetGameManager().summaryPrinter.NumberOfDeathsByTrap++;
-            world.GetGameManager().summaryPrinter. NumberOfHunterDeathsByTrap++;
+            if (world is GeneticWorld)
+            {
+                ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfDeathsByTrap++;
+                ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfHunterDeathsByTrap++;
+            }
             Death();
         }
     }
