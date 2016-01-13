@@ -192,26 +192,6 @@ public class GeneticWorld : MonoBehaviour, IWorld
     {
         world[i] = newType;
     }
-
-    Vector3 CellToWorld(int i, int j)
-    {
-        return new Vector3(i * spacing, j * spacing, -10) - new Vector3(sizeX / 2, sizeY / 2, 0);
-    }
-
-    Vector3 CellToWorld(int i)
-    {
-        return new Vector3(i / sizeX * spacing, i % sizeX * spacing, -10) - new Vector3(sizeX / 2, sizeY / 2, 0);
-    }
-
-    int WorldToCell(Vector3 location)
-    {
-        return 0; //not workerino
-    }
-
-    Vector2 WorldToCellMatrixIndex(Vector3 location)
-    {
-        return new Vector2(0, 0);//not workerino
-    }
     #endregion
 
     void OnDrawGizmos()
@@ -306,34 +286,6 @@ public class GeneticWorld : MonoBehaviour, IWorld
     }
 
     #region populateEnvironment
-    void PopulateObstacles(int nColumns, int nRows)
-    {
-
-        //column
-        for (int i = 0; i < nColumns; i++)
-        {
-            int x = Random.Range(1, sizeX - 2);
-            //int y = Random.Range(0, sizeY - 1);
-
-            for (int j = 1; j < sizeY - 1; j++)
-            {
-                SetTypeOfCell(x, j, typeOfCell.obstacle);
-            }
-
-        }
-
-        //row
-        for (int i = 0; i < nRows; i++)
-        {
-            //int x = Random.Range(0, sizeX - 1);
-            int y = Random.Range(1, sizeY - 2);
-
-            for (int j = 1; j < sizeX - 1; j++)
-            {
-                SetTypeOfCell(j, y, typeOfCell.obstacle);
-            }
-        }
-    }
 
     void PopulateTraps(int nTraps)
     {

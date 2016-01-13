@@ -24,13 +24,13 @@ public class GameManager : MonoBehaviour
         GameObject worldPhysical;
         GeneticWorld worldInstance;
         finishedSamples = new bool[4];
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < numberOfWorlds; i++)
         {
             finishedSamples[i] = false;
         }
         for (int i = 0; i < numberOfWorlds; i++)
         {
-            worldPhysical = (GameObject)Instantiate(worldPrefab, worldPrefab.transform.position + new Vector3(i * 300, 0, 0)
+            worldPhysical = (GameObject)Instantiate(worldPrefab, worldPrefab.transform.position + new Vector3((i / (numberOfWorlds/2)) * 230, (i % (numberOfWorlds / 2)) * 230, 0)
                 , worldPrefab.transform.rotation);
             worldPhysical.transform.parent = this.transform;
             worldPhysical.transform.name = "WorldNumber_" + i;
@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
         //Debug.Log(name + " finished");
         finishedSamples[id] = true;
         bool finished = true;
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < numberOfWorlds; i++)
         {
             finished &= finishedSamples[i];
         }
@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviour
             {
                 worlds[i].ResetWorld(pairOfResults.First[i], pairOfResults.Second[i]);
             }
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < numberOfWorlds; i++)
             {
                 finishedSamples[i] = false;
             }
