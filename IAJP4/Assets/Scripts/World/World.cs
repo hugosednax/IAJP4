@@ -118,7 +118,7 @@ public class World : MonoBehaviour
         {
             hunter = new Hunter(hunterX, hunterY, this, hunterGenesFromPappi);
         }
-        hunter = new Hunter(hunterX, hunterY, this);
+        
         SetTypeOfCell(hunterX, hunterY, typeOfCell.hunter);
 
         if (preyGenesFromPappi == null)
@@ -130,7 +130,7 @@ public class World : MonoBehaviour
             prey = new Prey(preyX, preyY, this, preyGenesFromPappi);
         }
         
-        prey = new Prey(preyX, preyY, this);
+        
         //Debug.Log("Finihsed!!!");
         SetTypeOfCell(preyX, preyY, typeOfCell.prey);
        // DebugDoubles(true);
