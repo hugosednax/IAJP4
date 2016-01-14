@@ -8,7 +8,7 @@ public static class SprintLeft
     {
         for (int i = 1; i <= Actor.SPRINT_LENGTH; i++)
         {
-            if (world.GetTypeOfCell(actor.PosX - i, actor.PosY) == typeOfCell.obstacle || actor.Energy < 0)
+            if (world.GetTypeOfCell(actor.PosX - i, actor.PosY) == typeOfCell.obstacle || actor.Energy < Actor.SPRINT_LENGTH * 3)
             {
                 return false;
             }

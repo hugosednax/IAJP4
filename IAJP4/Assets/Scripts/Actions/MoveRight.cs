@@ -6,7 +6,7 @@ public static class MoveRight
 {
     public static bool CanExecute(Actor actor, IWorld world)
     {
-        if (world.GetTypeOfCell(actor.PosX + 1, actor.PosY) == typeOfCell.obstacle || actor.Energy < 0)
+        if (world.GetTypeOfCell(actor.PosX + 1, actor.PosY) == typeOfCell.obstacle || actor.Energy < 3)
         {
             return false;
         }

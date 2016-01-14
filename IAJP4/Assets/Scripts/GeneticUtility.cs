@@ -53,21 +53,11 @@ static class GeneticUtility
             if ((float)r.NextDouble() <= 0.015f)
             {
                 Dictionary<int, float> newGene = new Dictionary<int, float>();
-                float cumProb = 0;
-                foreach (KeyValuePair<int, float> actionValuePair in gene.Value)
+                int choosenIndex = r.Next(gene.Value.Count);
+                for (int i = 0; i < gene.Value.Count; i++)
                 {
-                    float newProb = (float)r.NextDouble();
-                    if (newProb <= 0.1)
-                        newProb = (float)r.NextDouble() * 5.0f;
-                    else newProb = (float)r.NextDouble();
-                    cumProb += newProb;
-                    newGene.Add(actionValuePair.Key, newProb);
+                    newGene.Add(i, (i == choosenIndex ? 0.9f : 0.1f / (gene.Value.Count - 1)));
                 }
-                foreach (KeyValuePair<int, float> actionValuePair in gene.Value)
-                {
-                    newGene[actionValuePair.Key] = newGene[actionValuePair.Key] / cumProb;
-                }
-
                 modified.Add(gene.Key, newGene);
             }
         }

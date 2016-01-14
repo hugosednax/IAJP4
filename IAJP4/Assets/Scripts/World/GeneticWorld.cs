@@ -21,7 +21,7 @@ public class GeneticWorld : MonoBehaviour, IWorld
     [SerializeField]
     private bool debug = true;
     [SerializeField]
-    private float tickTimer = 0.01f;
+    private float tickTimer = 0.001f;
 
     
     public int numberOfTraps = 5;
@@ -32,6 +32,8 @@ public class GeneticWorld : MonoBehaviour, IWorld
     int turn = 0;
     int id = 0;
     bool finished = false;
+    bool toEnd = false;
+    bool saved = false;
 
     //Text hunterEnergy;
     //Text preyEnergy;
@@ -233,27 +235,17 @@ public class GeneticWorld : MonoBehaviour, IWorld
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         //DebugDoubles(false);
         elapsedTime += Time.deltaTime;
-        if (Input.GetMouseButtonDown(0) && debug)
+
+        if (Input.GetKeyUp(KeyCode.E))
         {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out hit))
-            {
-                //Debug.Log(hit.point);
-                //Debug.Log(WorldToCellMatrixIndex(hit.point));
-            }
+            toEnd = true;
         }
-        if (Input.GetKeyUp(KeyCode.A))
-            MoveActor(hunter, -1, 0);
-
         //GAME CYCLE
-        if (elapsedTime > tickTimer)
+        if (elapsedTime > tickTimer && !saved)
         {
             elapsedTime = 0f;
             if (hunter.Energy > 0 && prey.Energy > 0)
@@ -262,25 +254,16 @@ public class GeneticWorld : MonoBehaviour, IWorld
                     prey.Turn();
                 else hunter.Turn();
                 turn = (turn + 1) % 2;
-                //hunterEnergy.text = "Hunter Energy: " + hunter.Energy;
-                //preyEnergy.text = "Prey Energy: " + prey.Energy;
             }
             else
             {
-                /*string winner = "None";
-                if (hunter.Energy > 0)
+                if (toEnd)
                 {
-                    winner = "Hunter";
+                    hunter.SaveResults(id);
+                    prey.SaveResults(id);
+                    saved = true;
                 }
-                else
-                {
-                    winner = "Prey;";
-                }*/
-                //Debug.Log("reset by stamina");
-                hunter.SaveResults(id);
-                prey.SaveResults(id);
                 EndGame();
-                //Debug.Log("Game Over. Winner: " + winner);
             }
         }
     }
@@ -410,10 +393,8 @@ public class GeneticWorld : MonoBehaviour, IWorld
 
         for (int i = 0; i < Mathf.Abs(offsetX); i++)
         {
-            actor.Energy--;
+            actor.Energy-=3;
             HandleCollision(actor, actor.PosX + offset, actor.PosY);
-            if (actor.Energy < 0)
-                return;
             SetTypeOfCell(actor.PosX, actor.PosY, typeOfCell.normal);
 
             typeOfCell actorType;
@@ -424,16 +405,15 @@ public class GeneticWorld : MonoBehaviour, IWorld
 
             SetTypeOfCell(actor.PosX + offset, actor.PosY, actorType);
             actor.PosX += offset;
+            if (actor.Energy <= 0) return;
         }
 
         offset = offsetY == 0 ? 0 : (offsetY > 0 ? 1 : -1);
 
         for (int i = 0; i < Mathf.Abs(offsetY); i++)
         {
-            actor.Energy--;
+            actor.Energy-=3;
             HandleCollision(actor, actor.PosX, actor.PosY + offset);
-            if (actor.Energy < 0)
-                return;
             SetTypeOfCell(actor.PosX, actor.PosY, typeOfCell.normal);
 
             typeOfCell actorType;
@@ -444,6 +424,7 @@ public class GeneticWorld : MonoBehaviour, IWorld
 
             SetTypeOfCell(actor.PosX, actor.PosY + offset, actorType);
             actor.PosY += offset;
+            if (actor.Energy <= 0) return;
         }
     }
 

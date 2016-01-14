@@ -7,7 +7,7 @@ public class SprintUp {
     {
         for (int i = 1; i <= Actor.SPRINT_LENGTH; i++)
         {
-            if (world.GetTypeOfCell(actor.PosX, actor.PosY - i) == typeOfCell.obstacle || actor.Energy < 0)
+            if (world.GetTypeOfCell(actor.PosX, actor.PosY - i) == typeOfCell.obstacle || actor.Energy < Actor.SPRINT_LENGTH * 3)
             {
                 return false;
             }

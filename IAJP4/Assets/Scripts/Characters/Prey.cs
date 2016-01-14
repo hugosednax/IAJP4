@@ -38,7 +38,7 @@ public class Prey : Actor {
         }
         else if (typeCell == typeOfCell.hunter)
         {
-            world.Hunter.Energy += 500;
+            world.Hunter.Energy += 1000;
             Death();
         }
         else if (typeCell == typeOfCell.normal)
@@ -55,7 +55,7 @@ public class Prey : Actor {
                 ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfPlantsEaten++;
                 ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfPlantsEatenByPrey++;
             }
-            Energy += 60;
+            Energy += 80;
         }
         else if (typeCell == typeOfCell.trap)
         {

@@ -58,22 +58,22 @@ public abstract class Actor {
             gene = new Dictionary<int, float>();
             System.Random r = new System.Random();
             float cumProb = 0.0f;
+            int indexChoosen = r.Next(Actions.Count);
             for (int i = 0; i < Actions.Count; i++)
             {
-
-                float newProb = (float)r.NextDouble();
-                if (newProb <= 0.1)
+                float newProb = (i == indexChoosen ? 0.9f : 0.1f / (Actions.Count - 1));
+                /*if (newProb <= 0.1)
                     newProb = (float)r.NextDouble() * 5.0f;
-                else newProb = (float)r.NextDouble();
-                cumProb += newProb;
+                else newProb = (float)r.NextDouble();*/
+                //if(i==indexChoosen) newProb = Actions.Count
+                //cumProb += newProb;
                 gene.Add(Actions[i], newProb);
             }
             
-            for (int i = 0; i < Actions.Count; i++)
+            /*for (int i = 0; i < Actions.Count; i++)
             {
                 gene[Actions[i]] = gene[Actions[i]] / cumProb;
-            }
-            
+            }*/
             ActorGenes.Add(state, gene);
         }
         return gene;
