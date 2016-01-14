@@ -78,6 +78,11 @@ public class PlayableWorld : MonoBehaviour, IWorld
 
     void Start()
     {
+        ResetWorld();
+    }
+
+    void ResetWorld()
+    {
         world = new List<typeOfCell>();
         for (int i = 0; i < sizeX * sizeY; i++)
         {
@@ -106,7 +111,7 @@ public class PlayableWorld : MonoBehaviour, IWorld
                 GetTypeOfCell(preyX, preyY) != typeOfCell.normal;
         }
 
-        if(manager.playerType == typeOfPlayer.hunter)
+        if (manager.playerType == typeOfPlayer.hunter)
         {
             player = new Hunter(hunterX, hunterY, this);
             enemy = new Prey(preyX, preyY, this);
@@ -119,12 +124,15 @@ public class PlayableWorld : MonoBehaviour, IWorld
         enemy.LoadResults(0);
         SetTypeOfCell(hunterX, hunterY, typeOfCell.hunter);
         SetTypeOfCell(preyX, preyY, typeOfCell.prey);
-
     }
 
     void Update()
     {
-       
+        if (Input.GetKey(KeyCode.R))
+        {
+            ResetWorld();
+        }
+
         elapsedTime += Time.deltaTime;
         
         //GAME CYCLE

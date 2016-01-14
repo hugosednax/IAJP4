@@ -11,6 +11,7 @@ public class HumanPlayManager : MonoBehaviour
     public GameObject worldPrefab;
 
     private PlayableWorld world;
+    private GameObject worldPhysical;
     public typeOfPlayer playerType;
     public GameObject preSelectionCanvas;
     public GameObject postSelectionCanvas;
@@ -39,7 +40,7 @@ public class HumanPlayManager : MonoBehaviour
 
     public void Initialize()
     {
-        GameObject worldPhysical = (GameObject)Instantiate(worldPrefab, worldPrefab.transform.position, worldPrefab.transform.rotation);
+        worldPhysical = (GameObject)Instantiate(worldPrefab, worldPrefab.transform.position, worldPrefab.transform.rotation);
         worldPhysical.transform.parent = this.transform;
         worldPhysical.transform.name = "Playable World";
         world = worldPhysical.GetComponent<PlayableWorld>();
@@ -51,8 +52,8 @@ public class HumanPlayManager : MonoBehaviour
 
     private void SetRoleText()
     {
-        roleTexts[0].text += playerType;
-        roleTexts[1].text += enemyType;
+        roleTexts[0].text = "Player role: " + playerType;
+        roleTexts[1].text = "Enemy role: " + enemyType;
     }
 
     private void SetEnergyText()
@@ -86,6 +87,14 @@ public class HumanPlayManager : MonoBehaviour
     { 
         if(postSelectionCanvas.activeSelf)
             SetEnergyText();
+
+        if (Input.GetKey(KeyCode.T))
+        {
+            preSelectionCanvas.SetActive(true);
+            postSelectionCanvas.SetActive(false);
+            world = null;
+            Destroy(worldPhysical);
+        }
     }
 
 }
