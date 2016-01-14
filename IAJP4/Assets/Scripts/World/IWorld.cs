@@ -6,6 +6,7 @@ using WorldDefinition;
 
 public interface IWorld
 {
+    bool isGeneticWorld { get; set; }
     void killPrey();
     byte[] getState(Actor actor);
     Hunter Hunter { get; set; }
