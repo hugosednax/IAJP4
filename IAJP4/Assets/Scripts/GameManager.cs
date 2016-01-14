@@ -16,24 +16,24 @@ public class GameManager : MonoBehaviour
     private List<GeneticWorld> worlds;
     private bool[] finishedSamples;
     public SummaryPrinter summaryPrinter;
-    private Text generationText;
+    //private Text generationText;
 
     // Use this for initialization
     void Start()
     {
         generations = 0;
-        generationText = GameObject.Find("GenerationText").GetComponent<Text>();
+        //generationText = GameObject.Find("GenerationText").GetComponent<Text>();
         worlds = new List<GeneticWorld>();
         GameObject worldPhysical;
         GeneticWorld worldInstance;
-        finishedSamples = new bool[4];
+        finishedSamples = new bool[numberOfWorlds];
         for (int i = 0; i < numberOfWorlds; i++)
         {
             finishedSamples[i] = false;
         }
         for (int i = 0; i < numberOfWorlds; i++)
         {
-            worldPhysical = (GameObject)Instantiate(worldPrefab, worldPrefab.transform.position + new Vector3((i / (numberOfWorlds/2)) * 230, (i % (numberOfWorlds / 2)) * 230, 0)
+            worldPhysical = (GameObject)Instantiate(worldPrefab, worldPrefab.transform.position + new Vector3((i / (numberOfWorlds/10)) * 230, (i % (numberOfWorlds / 10)) * 230, 0)
                 , worldPrefab.transform.rotation);
             worldPhysical.transform.parent = this.transform;
             worldPhysical.transform.name = "WorldNumber_" + i;
@@ -121,6 +121,6 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        generationText.text = "Generation: " + generations;
+        //generationText.text = "Generation: " + generations;
     }
 }
