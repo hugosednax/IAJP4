@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using WorldDefinition;
-using UnityEngine.SceneManagement;
+//using UnityEngine.SceneManagement;
 
 public class PlayableWorld : MonoBehaviour, IWorld
 {
@@ -36,7 +36,6 @@ public class PlayableWorld : MonoBehaviour, IWorld
     float elapsedTime = 0f;
 
     HumanPlayManager manager;
-
     public Hunter Hunter
     {
         get
@@ -231,7 +230,8 @@ public class PlayableWorld : MonoBehaviour, IWorld
             else
             {
                 Debug.Log("Game Over, Winner: " + (player.Energy > 0 ? "Human Player" : "Bot"));
-                SceneManager.LoadScene("PlayableScene");
+                //SceneManager.LoadScene("PlayableScene");
+                Application.LoadLevel("PlayableScene");
             }
         }
     }
