@@ -11,6 +11,7 @@ public class PlayableWorld : World
     public Actor player {get; set;}
     public Actor enemy { get; set; }
 
+
     void Update()
     {
         if (Input.GetKey(KeyCode.R))
@@ -121,8 +122,4 @@ public class PlayableWorld : World
         }
     }
 
-    public void ChoosePlayer()
-    {
-        throw new System.NotImplementedException();
-    }
 }

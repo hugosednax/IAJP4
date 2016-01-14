@@ -7,7 +7,6 @@ using WorldDefinition;
 public class GeneticWorld : World
 {
     public GameManager manager { get; set; }
-
     public void EndGame()
     {
         manager.EndedWorld(id);

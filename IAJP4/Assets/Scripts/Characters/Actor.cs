@@ -81,7 +81,7 @@ public abstract class Actor {
 
     public void Death()
     {
-        if (world is GeneticWorld)
+        if (world.isGeneticWorld)
         {
             if (type == typeofActor.hunter)
                 ((GeneticWorld)world).manager.summaryPrinter.NumberOfWinsByPrey++;

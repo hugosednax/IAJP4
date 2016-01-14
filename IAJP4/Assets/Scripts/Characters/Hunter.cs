@@ -44,7 +44,7 @@ public class Hunter : Actor
         if (typeCell == typeOfCell.prey)
         {
             Energy += 1000;
-            if(world is GeneticWorld)
+            if(world.isGeneticWorld)
                 ((GeneticWorld)world).manager.summaryPrinter.NumberOfPreysEaten++;
             world.killPrey();
         }
@@ -62,7 +62,7 @@ public class Hunter : Actor
         }
         else if (typeCell == typeOfCell.plant)
         {
-            if (world is GeneticWorld) {
+            if (world.isGeneticWorld) {
                 ((GeneticWorld)world).manager.summaryPrinter.NumberOfPlantsEaten++;
                 ((GeneticWorld)world).manager.summaryPrinter.NumberOfPlantsEatenByHunter++;
             }
@@ -70,7 +70,7 @@ public class Hunter : Actor
         }
         else if (typeCell == typeOfCell.trap)
         {
-            if (world is GeneticWorld)
+            if (world.isGeneticWorld)
             {
                 ((GeneticWorld)world).manager.summaryPrinter.NumberOfDeathsByTrap++;
                 ((GeneticWorld)world).manager.summaryPrinter.NumberOfHunterDeathsByTrap++;

@@ -50,7 +50,7 @@ public class Prey : Actor {
         }
         else if (typeCell == typeOfCell.plant)
         {
-            if (world is GeneticWorld)
+            if (world.isGeneticWorld)
             {
                 ((GeneticWorld)world).manager.summaryPrinter.NumberOfPlantsEaten++;
                 ((GeneticWorld)world).manager.summaryPrinter.NumberOfPlantsEatenByPrey++;
@@ -59,7 +59,7 @@ public class Prey : Actor {
         }
         else if (typeCell == typeOfCell.trap)
         {
-            if(world is GeneticWorld) {
+            if(world.isGeneticWorld) {
                 ((GeneticWorld)world).manager.summaryPrinter.NumberOfDeathsByTrap++;
                 ((GeneticWorld)world).manager.summaryPrinter.NumberOfPreyDeathsByTrap++;
             }
