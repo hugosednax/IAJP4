@@ -27,8 +27,8 @@ public class PlayableWorld : MonoBehaviour, IWorld
     int turn = 0;
     int id = 0;
     bool finished = false;
-    private Actor player;
-    private Actor enemy;
+    public Actor player;
+    public Actor enemy;
 
     //Text hunterEnergy;
     //Text preyEnergy;
@@ -85,7 +85,6 @@ public class PlayableWorld : MonoBehaviour, IWorld
         }
         spacing = this.GetComponent<Renderer>().bounds.size.x / (float)sizeX;
 
-        //PopulateObstacles(1, 1);
         PopulateTraps(numberOfTraps);
         PopulatePlants(numberOfPlants);
 
@@ -105,7 +104,6 @@ public class PlayableWorld : MonoBehaviour, IWorld
             notPlaceable = (hunterX == preyX && hunterY == preyY) ||
                 GetTypeOfCell(hunterX, hunterY) != typeOfCell.normal ||
                 GetTypeOfCell(preyX, preyY) != typeOfCell.normal;
-            //Debug.Log("worldwhilenotplace");
         }
 
         if(manager.playerType == typeOfPlayer.hunter)

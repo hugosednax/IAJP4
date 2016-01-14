@@ -94,7 +94,7 @@ public class Hunter : Actor
             byte[] state = GetBytes(stateParts[0]);
 
             string[] actionEvaluationParts = stateParts[1].Split(';');
-            for (int j = 0; j < actionEvaluationParts.Length; j++)
+            for (int j = 0; j < actionEvaluationParts.Length - 1; j++)
             {
                 string[] evaluation = actionEvaluationParts[j].Split(',');
                 int actionId = Int32.Parse(evaluation[0]);
