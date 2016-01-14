@@ -6,6 +6,9 @@ using WorldDefinition;
 
 public class GeneticWorld : World
 {
+    void Awake(){
+        isGeneticWorld = true;
+    }
     public GameManager manager { get; set; }
     public void EndGame()
     {

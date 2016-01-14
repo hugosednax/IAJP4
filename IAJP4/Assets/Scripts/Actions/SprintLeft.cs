@@ -4,7 +4,7 @@ using WorldDefinition;
 
 public static class SprintLeft
 {
-    public static bool CanExecute(Actor actor, IWorld world)
+    public static bool CanExecute(Actor actor, World world)
     {
         for (int i = 1; i <= Actor.SPRINT_LENGTH; i++)
         {
@@ -16,7 +16,7 @@ public static class SprintLeft
         return true;
     }
 
-    public static void Execute(Actor actor, IWorld world)
+    public static void Execute(Actor actor, World world)
     {
         world.MoveActor(actor, -Actor.SPRINT_LENGTH, 0);
     }

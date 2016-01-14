@@ -9,7 +9,7 @@ using System.Linq;
 
 public class Hunter : Actor
 {
-    public Hunter(int posX, int posY, IWorld world)
+    public Hunter(int posX, int posY, World world)
         : base(posX, posY, Actor.typeofActor.hunter, world)
     {
         Actions = new List<int>();
@@ -24,7 +24,7 @@ public class Hunter : Actor
         Actions.Add(8);
     }
 
-    public Hunter(int posX, int posY, IWorld world, GenesEncap genesFromPappi)
+    public Hunter(int posX, int posY, World world, GenesEncap genesFromPappi)
         : base(posX, posY, Actor.typeofActor.hunter, world, genesFromPappi)
     {
         Actions = new List<int>();

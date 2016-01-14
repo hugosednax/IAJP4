@@ -6,7 +6,7 @@ using System;
 public abstract class Actor {
 
     [SerializeField]protected int energy = 100;
-    protected IWorld world;
+    protected World world;
     public int Energy {
         get { return energy; }
         set { energy = value; }
@@ -26,7 +26,7 @@ public abstract class Actor {
         plantDown, plantUp, plantLeft, plantRight
     */
 
-    public Actor(int posX, int posY, typeofActor type, IWorld world)
+    public Actor(int posX, int posY, typeofActor type, World world)
     {
         this.PosX = posX;
         this.PosY = posY;
@@ -36,7 +36,7 @@ public abstract class Actor {
         //percisa de valores randomizados
     }
 
-    public Actor(int posX, int posY, typeofActor type, IWorld world, GenesEncap genesFromPappi)
+    public Actor(int posX, int posY, typeofActor type, World world, GenesEncap genesFromPappi)
     {
         this.PosX = posX;
         this.PosY = posY;

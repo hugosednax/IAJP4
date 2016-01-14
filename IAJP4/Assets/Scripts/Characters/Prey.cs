@@ -8,7 +8,7 @@ using System.Text;
 
 public class Prey : Actor {
 
-    public Prey(int posX, int posY, IWorld world)
+    public Prey(int posX, int posY, World world)
         : base(posX, posY, Actor.typeofActor.prey, world)
     {
         Actions = new List<int>();
@@ -19,7 +19,7 @@ public class Prey : Actor {
         Actions.Add(4);
     }
 
-    public Prey(int posX, int posY, IWorld world, GenesEncap genesFromPappi)
+    public Prey(int posX, int posY, World world, GenesEncap genesFromPappi)
         : base(posX, posY, Actor.typeofActor.prey, world, genesFromPappi)
     {
         Actions = new List<int>();

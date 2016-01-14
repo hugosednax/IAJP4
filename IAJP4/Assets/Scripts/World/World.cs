@@ -9,7 +9,7 @@ namespace WorldDefinition
     public enum typeOfCell { obstacle, normal, trap, plant, hunter, prey };
 }
 
-public abstract class World : MonoBehaviour, IWorld {
+public abstract class World : MonoBehaviour {
     [SerializeField]
     protected int sizeX = 15;
     [SerializeField]
@@ -20,7 +20,7 @@ public abstract class World : MonoBehaviour, IWorld {
     protected bool debug = true;
     [SerializeField]
     protected float tickTimer = 0.001f;
-
+    public bool isGeneticWorld = false;
     
     public int numberOfTraps = 5;
     public int numberOfPlants = 3;
@@ -32,12 +32,7 @@ public abstract class World : MonoBehaviour, IWorld {
     protected bool finished = false;
     protected bool toEnd = false;
     protected bool saved = false;
-
-    //Text hunterEnergy;
-    //Text preyEnergy;
     protected float elapsedTime = 0f;
-
-    //public GameManager manager {get; set;}
 
     public Hunter Hunter
     {
@@ -80,7 +75,6 @@ public abstract class World : MonoBehaviour, IWorld {
         }
         spacing = this.GetComponent<Renderer>().bounds.size.x / (float)sizeX;
 
-        //PopulateObstacles(1, 1);
         PopulateTraps(numberOfTraps);
         PopulatePlants(numberOfPlants);
 
@@ -100,10 +94,8 @@ public abstract class World : MonoBehaviour, IWorld {
             notPlaceable = (hunterX == preyX && hunterY == preyY) ||
                 GetTypeOfCell(hunterX, hunterY) != typeOfCell.normal ||
                 GetTypeOfCell(preyX, preyY) != typeOfCell.normal;
-            //Debug.Log("worldwhilenotplace");
         }
 
-        //Debug.Log("reset "+transform.name);
         if (hunterGenesFromPappi == null)
         {
             hunter = new Hunter(hunterX, hunterY, this);
@@ -123,11 +115,7 @@ public abstract class World : MonoBehaviour, IWorld {
         {
             prey = new Prey(preyX, preyY, this, preyGenesFromPappi);
         }
-
-
-        //Debug.Log("Finihsed!!!");
         SetTypeOfCell(preyX, preyY, typeOfCell.prey);
-        // DebugDoubles(true);
     }
 
     public void DebugDoubles(bool start)

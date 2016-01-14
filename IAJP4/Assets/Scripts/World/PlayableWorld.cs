@@ -7,10 +7,14 @@ using WorldDefinition;
 
 public class PlayableWorld : World
 {
+    void Awake()
+    {
+        isGeneticWorld = false;
+    }
+
     public HumanPlayManager manager { get; set; }
     public Actor player {get; set;}
     public Actor enemy { get; set; }
-
 
     void Update()
     {

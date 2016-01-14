@@ -4,7 +4,7 @@ using WorldDefinition;
 
 public static class MoveDown
 {
-    public static bool CanExecute(Actor actor, IWorld world)
+    public static bool CanExecute(Actor actor, World world)
     {
         if (world.GetTypeOfCell(actor.PosX, actor.PosY - 1) == typeOfCell.obstacle || actor.Energy < 3)
         {
@@ -13,7 +13,7 @@ public static class MoveDown
         return true;
     }
 
-    public static void Execute(Actor actor, IWorld world)
+    public static void Execute(Actor actor, World world)
     {
         world.MoveActor(actor, 0, -1);
     }
