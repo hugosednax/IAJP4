@@ -17,6 +17,7 @@ public class HumanPlayManager : MonoBehaviour
     public GameObject postSelectionCanvas;
     // Use this for initialization
 
+    public bool playerIsHunter;
     private Text[] roleTexts;
     private Text[] energyTexts;
     private Button[] roleButtons;
@@ -73,6 +74,7 @@ public class HumanPlayManager : MonoBehaviour
     {
         playerType = typeOfPlayer.hunter;
         enemyType = typeOfPlayer.prey;
+        playerIsHunter = true;
 
         ColorBlock btnColors = roleButtons[1].colors;
         btnColors.highlightedColor = Color.green;
@@ -87,6 +89,7 @@ public class HumanPlayManager : MonoBehaviour
 
     public void setPlayerAsPrey()
     {
+        playerIsHunter = true;
         playerType = typeOfPlayer.prey;
         enemyType = typeOfPlayer.hunter;
 
