@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using WorldDefinition;
+using UnityEngine.SceneManagement;
 
 public class PlayableWorld : MonoBehaviour, IWorld
 {
@@ -176,7 +177,7 @@ public class PlayableWorld : MonoBehaviour, IWorld
                             turn = (turn + 1) % 2;
                         }
                     }
-                    else if (Input.GetKeyUp(KeyCode.Space))
+                    else if (Input.GetKeyUp(KeyCode.X))
                     {
                         if (ActionManager.CanExecute(4, player, this))
                         {
@@ -229,7 +230,8 @@ public class PlayableWorld : MonoBehaviour, IWorld
             }
             else
             {
-                Debug.Log("Game Over");
+                Debug.Log("Game Over, Winner: " + (player.Energy > 0 ? "Human Player" : "Bot"));
+                SceneManager.LoadScene("PlayableScene");
             }
         }
     }

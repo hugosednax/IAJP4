@@ -85,7 +85,7 @@ public class Prey : Actor {
             for (int j = 0; j < actionEvaluationParts.Length - 1; j++)
             {
                 string[] evaluation = actionEvaluationParts[j].Split(',');
-                Debug.Log(evaluation[0]);
+                //Debug.Log(evaluation[0]);
                 int actionId = Int32.Parse(evaluation[0]);
                 float value = float.Parse(evaluation[1]);
                 if (ActorGenes.Genes.ContainsKey(state))
