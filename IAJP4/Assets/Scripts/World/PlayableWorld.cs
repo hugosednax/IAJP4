@@ -189,9 +189,9 @@ public class PlayableWorld : MonoBehaviour, IWorld
                     {
                         if (Input.GetKeyUp(KeyCode.UpArrow))
                         {
-                            if (ActionManager.CanExecute(8, player, this))
+                            if (ActionManager.CanExecute(5, player, this))
                             {
-                                ActionManager.Execute(8, player, this);
+                                ActionManager.Execute(5, player, this);
                                 turn = (turn + 1) % 2;
                             }
                         }
@@ -205,9 +205,9 @@ public class PlayableWorld : MonoBehaviour, IWorld
                         }
                         else if (Input.GetKeyUp(KeyCode.DownArrow))
                         {
-                            if (ActionManager.CanExecute(5, player, this))
+                            if (ActionManager.CanExecute(8, player, this))
                             {
-                                ActionManager.Execute(5, player, this);
+                                ActionManager.Execute(8, player, this);
                                 turn = (turn + 1) % 2;
                             }
                         }
