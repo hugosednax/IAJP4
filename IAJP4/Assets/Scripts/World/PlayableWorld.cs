@@ -19,7 +19,7 @@ public class PlayableWorld : MonoBehaviour, IWorld
     [SerializeField]
     private float tickTimer = 0.01f;
 
-    public bool isGeneticWorld { get; set; }
+    
     public int numberOfTraps = 5;
     public int numberOfPlants = 3;
     List<typeOfCell> world;
@@ -79,7 +79,6 @@ public class PlayableWorld : MonoBehaviour, IWorld
 
     void Start()
     {
-        isGeneticWorld = false;
         ResetWorld();
     }
 
