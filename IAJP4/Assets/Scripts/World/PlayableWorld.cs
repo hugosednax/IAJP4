@@ -143,6 +143,7 @@ public class PlayableWorld : MonoBehaviour, IWorld
             {
                 if (turn == 0)
                 {
+                    #region ActionKeys
                     if (Input.GetKey(KeyCode.W))
                     {
                         if (ActionManager.CanExecute(0, player, this))
@@ -151,7 +152,7 @@ public class PlayableWorld : MonoBehaviour, IWorld
                             turn = (turn + 1) % 2;
                         }
                     }
-                    if (Input.GetKey(KeyCode.A))
+                    else if (Input.GetKey(KeyCode.A))
                     {
                         if (ActionManager.CanExecute(1, player, this))
                         {
@@ -159,7 +160,7 @@ public class PlayableWorld : MonoBehaviour, IWorld
                             turn = (turn + 1) % 2;
                         }
                     }
-                    if (Input.GetKey(KeyCode.S))
+                    else if (Input.GetKey(KeyCode.S))
                     {
                         if (ActionManager.CanExecute(3, player, this))
                         {
@@ -167,7 +168,7 @@ public class PlayableWorld : MonoBehaviour, IWorld
                             turn = (turn + 1) % 2;
                         }
                     }
-                    if (Input.GetKey(KeyCode.D))
+                    else if (Input.GetKey(KeyCode.D))
                     {
                         if (ActionManager.CanExecute(2, player, this))
                         {
@@ -175,6 +176,50 @@ public class PlayableWorld : MonoBehaviour, IWorld
                             turn = (turn + 1) % 2;
                         }
                     }
+                    else if (Input.GetKey(KeyCode.Space))
+                    {
+                        if (ActionManager.CanExecute(4, player, this))
+                        {
+                            ActionManager.Execute(4, player, this);
+                            turn = (turn + 1) % 2;
+                        }
+                    }
+                    else if (player.type == Actor.typeofActor.hunter)
+                    {
+                        if (Input.GetKey(KeyCode.UpArrow))
+                        {
+                            if (ActionManager.CanExecute(8, player, this))
+                            {
+                                ActionManager.Execute(8, player, this);
+                                turn = (turn + 1) % 2;
+                            }
+                        }
+                        else if (Input.GetKey(KeyCode.LeftArrow))
+                        {
+                            if (ActionManager.CanExecute(6, player, this))
+                            {
+                                ActionManager.Execute(6, player, this);
+                                turn = (turn + 1) % 2;
+                            }
+                        }
+                        else if (Input.GetKey(KeyCode.DownArrow))
+                        {
+                            if (ActionManager.CanExecute(5, player, this))
+                            {
+                                ActionManager.Execute(5, player, this);
+                                turn = (turn + 1) % 2;
+                            }
+                        }
+                        else if (Input.GetKey(KeyCode.RightArrow))
+                        {
+                            if (ActionManager.CanExecute(7, player, this))
+                            {
+                                ActionManager.Execute(7, player, this);
+                                turn = (turn + 1) % 2;
+                            }
+                        }
+                    }
+                    #endregion
                 }
                 else
                 {
