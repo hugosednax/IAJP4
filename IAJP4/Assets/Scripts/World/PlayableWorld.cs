@@ -19,7 +19,7 @@ public class PlayableWorld : World
     void Start()
     {
         base.Start();
-        if (manager.playerIsHunter)
+        if (manager.playerType == typeOfPlayer.hunter)
         {
             player = hunter;
             enemy = prey;
