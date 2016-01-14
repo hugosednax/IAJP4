@@ -112,7 +112,7 @@ public class HumanPlayManager : MonoBehaviour
         if (postSelectionCanvas.activeSelf)
             SetEnergyText();
 
-        if (Input.GetKey(KeyCode.T))
+        if (Input.GetKeyDown(KeyCode.T))
         {
             Application.LoadLevel("PlayableScene");
         }

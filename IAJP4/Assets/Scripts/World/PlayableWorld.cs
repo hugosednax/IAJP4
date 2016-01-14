@@ -33,7 +33,7 @@ public class PlayableWorld : World
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             Start();
         }
