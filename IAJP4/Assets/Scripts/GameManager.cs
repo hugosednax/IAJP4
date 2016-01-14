@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
             worldPhysical.transform.parent = this.transform;
             worldPhysical.transform.name = "WorldNumber_" + i;
             worldInstance = worldPhysical.GetComponent<GeneticWorld>();
-            worldInstance.setGameManager(this);
+            worldInstance.manager = this;
             worldInstance.setId(i);
             worlds.Add(worldInstance);
         }

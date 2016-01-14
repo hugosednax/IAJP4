@@ -52,16 +52,16 @@ public class Prey : Actor {
         {
             if (world is GeneticWorld)
             {
-                ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfPlantsEaten++;
-                ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfPlantsEatenByPrey++;
+                ((GeneticWorld)world).manager.summaryPrinter.NumberOfPlantsEaten++;
+                ((GeneticWorld)world).manager.summaryPrinter.NumberOfPlantsEatenByPrey++;
             }
             Energy += 80;
         }
         else if (typeCell == typeOfCell.trap)
         {
             if(world is GeneticWorld) {
-                ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfDeathsByTrap++;
-                ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfPreyDeathsByTrap++;
+                ((GeneticWorld)world).manager.summaryPrinter.NumberOfDeathsByTrap++;
+                ((GeneticWorld)world).manager.summaryPrinter.NumberOfPreyDeathsByTrap++;
             }
             Death();
         }

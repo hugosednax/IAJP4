@@ -84,9 +84,9 @@ public abstract class Actor {
         if (world is GeneticWorld)
         {
             if (type == typeofActor.hunter)
-                ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfWinsByPrey++;
+                ((GeneticWorld)world).manager.summaryPrinter.NumberOfWinsByPrey++;
             if (type == typeofActor.prey)
-                ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfWinsByHunter++;
+                ((GeneticWorld)world).manager.summaryPrinter.NumberOfWinsByHunter++;
         }
         Energy = -999;
     }

@@ -19,17 +19,21 @@ public class HumanPlayManager : MonoBehaviour
 
     private Text[] roleTexts;
     private Text[] energyTexts;
+    private Button[] roleButtons;
     private typeOfPlayer enemyType;
 
     void Awake()
     {
         roleTexts = new Text[2];
         energyTexts = new Text[2];
+        roleButtons = new Button[2];
 
         roleTexts[0] = postSelectionCanvas.transform.FindChild("PlayerRole").GetComponent<Text>();
         roleTexts[1] = postSelectionCanvas.transform.FindChild("EnemyRole").GetComponent<Text>();
         energyTexts[0] = postSelectionCanvas.transform.FindChild("PlayerEnergy").GetComponent<Text>();
         energyTexts[1] = postSelectionCanvas.transform.FindChild("EnemyEnergy").GetComponent<Text>();
+        roleButtons[0] = preSelectionCanvas.transform.FindChild("PreyButton").GetComponent<Button>();
+        roleButtons[1] = preSelectionCanvas.transform.FindChild("HunterButton").GetComponent<Button>();
     }
 
     void Start()
@@ -44,7 +48,7 @@ public class HumanPlayManager : MonoBehaviour
         worldPhysical.transform.parent = this.transform;
         worldPhysical.transform.name = "Playable World";
         world = worldPhysical.GetComponent<PlayableWorld>();
-        world.setGameManager(this);
+        world.manager = this;
         preSelectionCanvas.SetActive(false);
         postSelectionCanvas.SetActive(true);
         SetRoleText();
@@ -69,33 +73,49 @@ public class HumanPlayManager : MonoBehaviour
     {
         playerType = typeOfPlayer.hunter;
         enemyType = typeOfPlayer.prey;
+
+        ColorBlock btnColors = roleButtons[1].colors;
+        btnColors.highlightedColor = Color.green;
+        btnColors.normalColor = Color.green;
+        roleButtons[1].colors = btnColors;
+
+        btnColors = roleButtons[0].colors;
+        btnColors.highlightedColor = Color.white;
+        btnColors.normalColor = Color.white;
+        roleButtons[0].colors = btnColors;
     }
 
     public void setPlayerAsPrey()
     {
         playerType = typeOfPlayer.prey;
         enemyType = typeOfPlayer.hunter;
+
+        ColorBlock btnColors = roleButtons[1].colors;
+        btnColors.highlightedColor = Color.white;
+        btnColors.normalColor = Color.white;
+        roleButtons[1].colors = btnColors;
+
+        btnColors = roleButtons[0].colors;
+        btnColors.highlightedColor = Color.green;
+        btnColors.normalColor = Color.green;
+        roleButtons[0].colors = btnColors;
     }
 
     public void EndedWorld()
     {
-        Debug.Log("Game Over: ");    
+        Debug.Log("Game Over: ");
     }
 
     // Update is called once per frame
     void Update() //having energy being updated is suboptimal, but changing it to "only update when energy is updated" requires the actor to know what type of world he is playing in
-    { 
-        if(postSelectionCanvas.activeSelf)
+    {
+        if (postSelectionCanvas.activeSelf)
             SetEnergyText();
 
         if (Input.GetKey(KeyCode.T))
         {
-            preSelectionCanvas.SetActive(true);
-            postSelectionCanvas.SetActive(false);
-            world = null;
-            Destroy(worldPhysical);
+            Application.LoadLevel("PlayableScene");
         }
     }
 
 }
-
