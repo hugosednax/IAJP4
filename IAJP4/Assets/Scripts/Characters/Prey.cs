@@ -50,7 +50,7 @@ public class Prey : Actor {
         }
         else if (typeCell == typeOfCell.plant)
         {
-            if (world is GeneticWorld)
+            if (world.isGeneticWorld)
             {
                 ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfPlantsEaten++;
                 ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfPlantsEatenByPrey++;
@@ -59,7 +59,7 @@ public class Prey : Actor {
         }
         else if (typeCell == typeOfCell.trap)
         {
-            if(world is GeneticWorld) {
+            if(world.isGeneticWorld) {
                 ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfDeathsByTrap++;
                 ((GeneticWorld)world).GetGameManager().summaryPrinter.NumberOfPreyDeathsByTrap++;
             }

@@ -90,10 +90,7 @@ public class HumanPlayManager : MonoBehaviour
 
         if (Input.GetKey(KeyCode.T))
         {
-            preSelectionCanvas.SetActive(true);
-            postSelectionCanvas.SetActive(false);
-            world = null;
-            Destroy(worldPhysical);
+            Application.LoadLevel("PlayableScene");
         }
     }
 
