@@ -2,11 +2,11 @@
 using System.Collections;
 using WorldDefinition;
 
-public static class MoveUp
-{
+public static class MoveUp {
+
     public static bool CanExecute(Actor actor, IWorld world)
     {
-        if (world.GetTypeOfCell(actor.PosX, actor.PosY - 1) == typeOfCell.obstacle || actor.Energy < 3)
+        if (world.GetTypeOfCell(actor.PosX, actor.PosY + 1) == typeOfCell.obstacle || actor.Energy < 3)
         {
             return false;
         }
@@ -15,6 +15,6 @@ public static class MoveUp
 
     public static void Execute(Actor actor, IWorld world)
     {
-        world.MoveActor(actor, 0, -1);
+        world.MoveActor(actor, 0, 1);
     }
 }
