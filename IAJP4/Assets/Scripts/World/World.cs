@@ -60,7 +60,7 @@ public abstract class World : MonoBehaviour {
         }
     }
 
-    void Start()
+    public void Start()
     {
         ResetWorld();
     }

@@ -10,6 +10,12 @@ public class GeneticWorld : World
         isGeneticWorld = true;
     }
     public GameManager manager { get; set; }
+
+    void Start()
+    {
+        base.Start();
+    }
+
     public void EndGame()
     {
         manager.EndedWorld(id);

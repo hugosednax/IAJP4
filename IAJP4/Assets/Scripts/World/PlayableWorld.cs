@@ -16,6 +16,21 @@ public class PlayableWorld : World
     public Actor player {get; set;}
     public Actor enemy { get; set; }
 
+    void Start()
+    {
+        base.Start();
+        if (manager.playerIsHunter)
+        {
+            player = hunter;
+            enemy = prey;
+        }
+        else
+        {
+            player = prey;
+            enemy = hunter;
+        }
+    }
+
     void Update()
     {
         if (Input.GetKey(KeyCode.R))
