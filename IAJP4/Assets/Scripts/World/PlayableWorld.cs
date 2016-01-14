@@ -35,7 +35,7 @@ public class PlayableWorld : World
     {
         if (Input.GetKey(KeyCode.R))
         {
-            ResetWorld();
+            Start();
         }
 
         elapsedTime += Time.deltaTime;
