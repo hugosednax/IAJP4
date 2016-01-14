@@ -16,13 +16,13 @@ public class GameManager : MonoBehaviour
     private List<GeneticWorld> worlds;
     private bool[] finishedSamples;
     public SummaryPrinter summaryPrinter;
-    //private Text generationText;
+    private Text generationText;
 
     // Use this for initialization
     void Start()
     {
         generations = 0;
-        //generationText = GameObject.Find("GenerationText").GetComponent<Text>();
+        generationText = GameObject.Find("GenerationText").GetComponent<Text>();
         worlds = new List<GeneticWorld>();
         GameObject worldPhysical;
         GeneticWorld worldInstance;
@@ -121,6 +121,6 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //generationText.text = "Generation: " + generations;
+        generationText.text = "Generation: " + generations;
     }
 }
