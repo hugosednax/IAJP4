@@ -144,7 +144,7 @@ public class PlayableWorld : MonoBehaviour, IWorld
                 if (turn == 0)
                 {
                     #region ActionKeys
-                    if (Input.GetKey(KeyCode.W))
+                    if (Input.GetKeyUp(KeyCode.W))
                     {
                         if (ActionManager.CanExecute(0, player, this))
                         {
@@ -152,7 +152,7 @@ public class PlayableWorld : MonoBehaviour, IWorld
                             turn = (turn + 1) % 2;
                         }
                     }
-                    else if (Input.GetKey(KeyCode.A))
+                    else if (Input.GetKeyUp(KeyCode.A))
                     {
                         if (ActionManager.CanExecute(1, player, this))
                         {
@@ -160,7 +160,7 @@ public class PlayableWorld : MonoBehaviour, IWorld
                             turn = (turn + 1) % 2;
                         }
                     }
-                    else if (Input.GetKey(KeyCode.S))
+                    else if (Input.GetKeyUp(KeyCode.S))
                     {
                         if (ActionManager.CanExecute(3, player, this))
                         {
@@ -168,7 +168,7 @@ public class PlayableWorld : MonoBehaviour, IWorld
                             turn = (turn + 1) % 2;
                         }
                     }
-                    else if (Input.GetKey(KeyCode.D))
+                    else if (Input.GetKeyUp(KeyCode.D))
                     {
                         if (ActionManager.CanExecute(2, player, this))
                         {
@@ -176,7 +176,7 @@ public class PlayableWorld : MonoBehaviour, IWorld
                             turn = (turn + 1) % 2;
                         }
                     }
-                    else if (Input.GetKey(KeyCode.Space))
+                    else if (Input.GetKeyUp(KeyCode.Space))
                     {
                         if (ActionManager.CanExecute(4, player, this))
                         {
@@ -186,7 +186,7 @@ public class PlayableWorld : MonoBehaviour, IWorld
                     }
                     else if (player.type == Actor.typeofActor.hunter)
                     {
-                        if (Input.GetKey(KeyCode.UpArrow))
+                        if (Input.GetKeyUp(KeyCode.UpArrow))
                         {
                             if (ActionManager.CanExecute(8, player, this))
                             {
@@ -194,7 +194,7 @@ public class PlayableWorld : MonoBehaviour, IWorld
                                 turn = (turn + 1) % 2;
                             }
                         }
-                        else if (Input.GetKey(KeyCode.LeftArrow))
+                        else if (Input.GetKeyUp(KeyCode.LeftArrow))
                         {
                             if (ActionManager.CanExecute(6, player, this))
                             {
@@ -202,7 +202,7 @@ public class PlayableWorld : MonoBehaviour, IWorld
                                 turn = (turn + 1) % 2;
                             }
                         }
-                        else if (Input.GetKey(KeyCode.DownArrow))
+                        else if (Input.GetKeyUp(KeyCode.DownArrow))
                         {
                             if (ActionManager.CanExecute(5, player, this))
                             {
@@ -210,7 +210,7 @@ public class PlayableWorld : MonoBehaviour, IWorld
                                 turn = (turn + 1) % 2;
                             }
                         }
-                        else if (Input.GetKey(KeyCode.RightArrow))
+                        else if (Input.GetKeyUp(KeyCode.RightArrow))
                         {
                             if (ActionManager.CanExecute(7, player, this))
                             {
