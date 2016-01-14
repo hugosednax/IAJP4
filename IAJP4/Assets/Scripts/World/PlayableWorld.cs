@@ -29,6 +29,7 @@ public class PlayableWorld : World
             player = prey;
             enemy = hunter;
         }
+        enemy.LoadResults(0);
     }
 
     void Update()
