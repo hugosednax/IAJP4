@@ -1,3 +1,0 @@
-There were 226 deaths by traps, out of these 106 were hunter deaths and 120 were prey deaths.
- There were 613 traps that were detected, out of these 338 were detected by a hunter and 275 were detected by a prey. There were 5 traps per world, making it total 2500 traps There were 522 plants eaten, out of these 314 were eaten by hunters and 208 were eaten by preys.
- There were 53075 plants that were detected, out of these 26746 were detected by a hunter and 26329 were detected by a prey. There were 3 plants per world, making it total 1500 plants Out of 500 samples, 363 were won by a hunter and 106 were won by a prey. 196 is the number of times hunters ate the prey

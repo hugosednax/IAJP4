@@ -29,7 +29,7 @@ public abstract class World : MonoBehaviour {
     protected Hunter hunter;
     protected Prey prey;
     protected int turn = 0;
-    protected int id = 0;
+    public int id = 0;
     protected bool finished = false;
     protected bool toEnd = false;
     protected bool saved = false;
