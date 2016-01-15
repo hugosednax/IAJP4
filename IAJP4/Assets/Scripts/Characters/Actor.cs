@@ -7,7 +7,7 @@ using System.Linq;
 public abstract class Actor {
 
     [SerializeField]protected int energy = 300;
-    public World world;
+    protected World world;
     public int Energy {
         get { return energy; }
         set { energy = value; }

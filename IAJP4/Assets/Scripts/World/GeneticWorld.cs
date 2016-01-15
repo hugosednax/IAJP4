@@ -43,14 +43,12 @@ public class GeneticWorld : World
             }
             else
             {
-                /*
                 if (toEnd)
                 {
                     hunter.SaveResults(id);
                     prey.SaveResults(id);
                     saved = true;
                 }
-                */
                 EndGame();
             }
         }
