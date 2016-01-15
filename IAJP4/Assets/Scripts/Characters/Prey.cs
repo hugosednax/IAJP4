@@ -38,6 +38,7 @@ public class Prey : Actor {
         }
         else if (typeCell == typeOfCell.hunter)
         {
+            collisionWithEnemy++;
             world.Hunter.Energy += 1000;
             Death();
         }
@@ -50,6 +51,7 @@ public class Prey : Actor {
         }
         else if (typeCell == typeOfCell.plant)
         {
+            plantsCollected++;
             if (world.isGeneticWorld)
             {
                 ((GeneticWorld)world).manager.summaryPrinter.NumberOfPlantsEaten++;

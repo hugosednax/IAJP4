@@ -34,7 +34,7 @@ public class GenesEncap
     {
         this.genes = (int[])genes.Clone();
         this.numActions = numActions;
-        randomizeGene();
+        //randomizeGene();
     }
 
     private void randomizeGene()

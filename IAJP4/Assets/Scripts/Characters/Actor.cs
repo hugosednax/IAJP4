@@ -18,6 +18,8 @@ public abstract class Actor {
     public typeofActor type { private set; get; }
     public GenesEncap ActorGenes { get; set; }
     public List<int> Actions { protected set; get; }
+    public int plantsCollected = 0;
+    public int collisionWithEnemy = 0;
 
     public const int SPRINT_LENGTH = 2;
 
