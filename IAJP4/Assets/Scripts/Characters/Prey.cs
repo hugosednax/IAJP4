@@ -74,14 +74,12 @@ public class Prey : Actor {
 
     public override void LoadResults(int sampleId)
     {
-
         string input = System.IO.File.ReadAllText("../prey" + sampleId + ".txt");
-        string[] inputSplits = input.Split(';');
-        float[] genes = new float[inputSplits.Length - 1];
-        for (int i = 0; i < inputSplits.Length - 1; i++)
+        int[] genes = new int[12];
+        for (int i = 0; i < genes.Length - 1; i++)
         {
-            genes[i] = float.Parse(inputSplits[i]);
+            genes[i] = int.Parse("" + input[i]);
         }
-        ActorGenes = new GenesEncap(genes);
+        ActorGenes = new GenesEncap(genes, Actions.Count);
     }
 }

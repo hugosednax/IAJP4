@@ -13,7 +13,7 @@ static class GeneticUtility
         
         // Loop through genes
         System.Random r = new System.Random();
-        float[] newGenes = new float[actor1.ActorGenes.Genes.Length];
+        int[] newGenes = new int[actor1.ActorGenes.Genes.Length];
         for (int i = 0; i < actor1.ActorGenes.Genes.Length; i++)
         {
             if ((float)r.NextDouble() <= 0.5f)
@@ -25,7 +25,7 @@ static class GeneticUtility
                 newGenes[i] = actor2.ActorGenes.Genes[i];
             }
         }
-        GenesEncap newActor = new GenesEncap(newGenes);
+        GenesEncap newActor = new GenesEncap(newGenes, actor1.Actions.Count);
         return newActor;
     }
 
@@ -33,16 +33,11 @@ static class GeneticUtility
     public static void mutate(GenesEncap genes)
     {
         System.Random r = new System.Random();
-        int sizeOfGene = genes.typeOfActor == Actor.typeofActor.hunter ? 9 : 5;
-        for (int i = 0; i < genes.Genes.Length / sizeOfGene; i++)
+        for (int i = 0; i < genes.Genes.Length; i++)
         {
             if ((float)r.NextDouble() <= 0.015f)
             {
-                int choosenIndex = r.Next(sizeOfGene);
-                for (int j = 0; j < sizeOfGene; j++)
-                {
-                    genes.Genes[i * sizeOfGene + j] = (j == choosenIndex ? 0.9f : 0.1f / (sizeOfGene - 1));
-                }
+                genes.Genes[i] = r.Next(genes.numActions);
             }
         }
     }

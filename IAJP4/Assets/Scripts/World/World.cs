@@ -290,20 +290,20 @@ public abstract class World : MonoBehaviour {
         states[2] = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.trap);
         List<int> ret = new List<int>();
         int j = 0;
-        if (IsBitSet(states[0], 4)) ret.Add(j); j++; //EnemyDown
-        if (IsBitSet(states[0], 5)) ret.Add(j); j++; //EnemyUp
-        if (IsBitSet(states[0], 6)) ret.Add(j); j++; //EnemyLeft
-        if (IsBitSet(states[0], 7)) ret.Add(j); j++; //EnemyRight
+        if ((states[0] & 0x08) != 0) ret.Add(j); j++; //EnemyDown
+        if ((states[0] & 0x04) != 0) ret.Add(j); j++; //EnemyUp
+        if ((states[0] & 0x02) != 0) ret.Add(j); j++; //EnemyLeft
+        if ((states[0] & 0x01) != 0) ret.Add(j); j++; //EnemyRight
 
-        if (IsBitSet(states[1], 4)) ret.Add(j); j++; //PlantDown
-        if (IsBitSet(states[1], 5)) ret.Add(j); j++; //PlantUp
-        if (IsBitSet(states[1], 6)) ret.Add(j); j++; //PlantLeft
-        if (IsBitSet(states[1], 7)) ret.Add(j); j++; //PlantRight
+        if ((states[1] & 0x08) != 0) ret.Add(j); j++; //PlantDown
+        if ((states[1] & 0x04) != 0) ret.Add(j); j++; //PlantUp
+        if ((states[1] & 0x02) != 0) ret.Add(j); j++; //PlantLeft
+        if ((states[1] & 0x01) != 0) ret.Add(j); j++; //PlantRight
 
-        if (IsBitSet(states[2], 4)) ret.Add(j); j++; //TrapDown
-        if (IsBitSet(states[2], 5)) ret.Add(j); j++; //TrapUp
-        if (IsBitSet(states[2], 6)) ret.Add(j); j++; //TrapLeft
-        if (IsBitSet(states[2], 7)) ret.Add(j); j++; //TrapRight
+        if ((states[2] & 0x08) != 0) ret.Add(j); j++; //TrapDown
+        if ((states[2] & 0x04) != 0) ret.Add(j); j++; //TrapUp
+        if ((states[2] & 0x02) != 0) ret.Add(j); j++; //TrapLeft
+        if ((states[2] & 0x01) != 0) ret.Add(j); j++; //TrapRight
         return ret;
     }
 
@@ -362,10 +362,5 @@ public abstract class World : MonoBehaviour {
     public void setId(int id)
     {
         this.id = id;
-    }
-
-    bool IsBitSet(byte b, int pos)
-    {
-        return (b & (1 << pos)) != 0;
     }
 }

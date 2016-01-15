@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using WorldDefinition;
 using System;
+using System.Linq;
 
 public abstract class Actor {
 
@@ -31,7 +32,7 @@ public abstract class Actor {
         this.PosX = posX;
         this.PosY = posY;
         this.type = type;
-        ActorGenes = new GenesEncap(this.type);
+        ActorGenes = new GenesEncap((type == typeofActor.hunter ? 9 : 5));
         this.world = world;
         //percisa de valores randomizados
     }
@@ -66,14 +67,19 @@ public abstract class Actor {
         bool isValid = false;
         //Actor.state state = chooseState(actor);
         List<int> state = world.getState(this);
-
-        float[] gene = ActorGenes.getGeneFromState(state);
-
-        System.Random r = new System.Random();
-
-        while (!isValid)
+        List<int> geneSeed = ActorGenes.getGeneFromState(state);
+        float[] gene = generateProbabilities(geneSeed);
+        /*string geneStr = "";
+        for (int i = 0; i < gene.Length; i++)
         {
-            //Debug.Log("whilevalid");
+            geneStr += gene[i] + " ; ";
+        }
+        Debug.Log(geneStr);*/
+        System.Random r = new System.Random();
+        int counter = 0;
+        while (!isValid && counter < 4)
+        {
+            counter++;
             float diceRoll = (float)r.NextDouble();
             float cumulative = 0.0f;
             for (int i = 0; i < Actions.Count; i++)
@@ -84,7 +90,6 @@ public abstract class Actor {
                     isValid = ActionManager.CanExecute(Actions[i], this, world);
                     if (isValid)
                     {
-                        //Debug.Log(action.ToString());
                         ActionManager.Execute(Actions[i], this, world);
                         break;
                     }
@@ -98,6 +103,38 @@ public abstract class Actor {
         byte[] bytes = new byte[str.Length * sizeof(char)];
         System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
         return bytes;
+    }
+
+    public float[] generateProbabilities(List<int> gene)
+    {
+        float[] finalProbabilities = new float[Actions.Count];
+        Array.Clear(finalProbabilities, 0, finalProbabilities.Length);
+        if (gene.Count == 0)
+        {
+            for (int i = 0; i < finalProbabilities.Length; i++)
+            {
+                finalProbabilities[i] = 1.0f / (float)finalProbabilities.Length;
+            }
+            return finalProbabilities;
+        }
+        for (int i = 0; i < gene.Count; i++)
+        {
+            float[] actionsEvaluation = new float[Actions.Count];
+            actionsEvaluation = generateProbabilities(gene[i]);
+            finalProbabilities = finalProbabilities.Select((x, index) => x + actionsEvaluation[index]).ToArray();
+        }
+        finalProbabilities = finalProbabilities.Select(d => d / (float)gene.Count).ToArray();
+        return finalProbabilities;
+    }
+
+    public float[] generateProbabilities(int action)
+    {
+        float[] probs = new float[Actions.Count];
+        for (int i = 0; i < probs.Length; i++)
+        {
+            probs[i] = (i == action ? 0.9f : 0.1f / (Actions.Count - 1));
+        }
+        return probs;
     }
 }
 

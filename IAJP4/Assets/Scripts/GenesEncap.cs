@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 
 public class GenesEncap
 {
-    float[] genes;
-    public Actor.typeofActor typeOfActor;
+    int[] genes;
+    public int numActions;
 
-    public float[] Genes
+    public int[] Genes
     {
         get
         {
@@ -22,40 +23,33 @@ public class GenesEncap
         }
     }
 
-    public GenesEncap(Actor.typeofActor type)
+    public GenesEncap(int numActions)
     {
-        if(type == Actor.typeofActor.hunter)
-            genes = new float[108];
-        else genes = new float[60];
-        this.typeOfActor = type;
+        genes = new int[12];
+        this.numActions = numActions;
         randomizeGene();
     }
 
-    public GenesEncap(float[] genes)
+    public GenesEncap(int[] genes, int numActions)
     {
-        this.genes = (float[])genes.Clone();
-        this.typeOfActor = (genes.Length == 108 ? Actor.typeofActor.hunter : Actor.typeofActor.prey);
+        this.genes = (int[])genes.Clone();
+        this.numActions = numActions;
         randomizeGene();
     }
 
     private void randomizeGene()
     {
         System.Random r = new System.Random();
-        int sizeOfGene = (typeOfActor == Actor.typeofActor.hunter ? 9 : 5);
-        for (int i = 0; i < genes.Length / sizeOfGene; i++)
+        for (int i = 0; i < genes.Length; i++)
         {
-            int choosenIndex = r.Next(sizeOfGene);
-            for (int j = 0; j < sizeOfGene; j++)
-            {
-                genes[i * sizeOfGene + j] = (j == choosenIndex ? 0.9f : 0.1f / (sizeOfGene - 1));
-            }
+            genes[i] = r.Next(numActions);
         }
     }
     public override string ToString()
     {
         string ret = "";
         for (int i = 0; i < genes.Length; i++)
-            ret += genes[i] + ";";
+            ret += genes[i];
         return ret;
     }
 
@@ -65,24 +59,14 @@ public class GenesEncap
         return hex.Replace("-", "");
     }
 
-    public float[] getGeneFromState(List<int> state)
+    public List<int> getGeneFromState(List<int> state)
     {
-        float[] probSum;
-        int sizeOfGene = (typeOfActor == Actor.typeofActor.hunter ? 9 : 5);
-        probSum = new float[sizeOfGene];
-        for (int i = 0; i < probSum.Length; i++)
-        {
-            probSum[i] = 0.0f;
-        }
-
+        List<int> gene = new List<int>();
         for (int i = 0; i < state.Count; i++)
         {
-            float[] stateGene = new float[sizeOfGene];
-            Array.Copy(genes, state[i] * sizeOfGene, stateGene, 0, sizeOfGene);
-            probSum = probSum.Select((x, index) => x + stateGene[index]).ToArray();
+            gene.Add(genes[state[i]]);
         }
-        probSum = probSum.Select(d => d / (float)state.Count).ToArray();
-        return probSum;
+        return gene;
     }
 }
 
