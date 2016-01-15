@@ -86,36 +86,14 @@ public class Hunter : Actor
 
     public override void LoadResults(int sampleId)
     {
-        ActorGenes = new GenesEncap();
-        string[] lines = System.IO.File.ReadAllLines("../hunter" + sampleId + ".txt");
-        for (int i = 0; i < lines.Length; i++)
+        
+        string input = System.IO.File.ReadAllText("../hunter" + sampleId + ".txt");
+        string[] inputSplits = input.Split(';');
+        float[] genes = new float[inputSplits.Length - 1];
+        for (int i = 0; i < inputSplits.Length - 1; i++)
         {
-            string[] stateParts = lines[i].Split(':');
-            byte[] state = GetBytes(stateParts[0]);
-
-            string[] actionEvaluationParts = stateParts[1].Split(';');
-            for (int j = 0; j < actionEvaluationParts.Length - 1; j++)
-            {
-                string[] evaluation = actionEvaluationParts[j].Split(',');
-                int actionId = Int32.Parse(evaluation[0]);
-                float value = float.Parse(evaluation[1]);
-                if (ActorGenes.Genes.ContainsKey(state))
-                {
-                    ActorGenes.Genes[state].Add(actionId, value);
-                }
-                else
-                {
-                    Dictionary<int, float> actionValues = new Dictionary<int, float>();
-                    actionValues.Add(actionId, value);
-                    ActorGenes.Add(state, actionValues);
-                }
-            }
-
+            genes[i] = float.Parse(inputSplits[i]);
         }
-
+        ActorGenes = new GenesEncap(genes);
     }
-
-
-
-
 }

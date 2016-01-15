@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using WorldDefinition;
+using System;
 
 namespace WorldDefinition
 {
@@ -87,10 +88,10 @@ public abstract class World : MonoBehaviour {
         bool notPlaceable = true;
         while (notPlaceable)
         {
-            hunterX = Random.Range(0, sizeX - 1);
-            hunterY = Random.Range(0, sizeY - 1);
-            preyX = Random.Range(0, sizeX - 1);
-            preyY = Random.Range(0, sizeY - 1);
+            hunterX = UnityEngine.Random.Range(0, sizeX - 1);
+            hunterY = UnityEngine.Random.Range(0, sizeY - 1);
+            preyX = UnityEngine.Random.Range(0, sizeX - 1);
+            preyY = UnityEngine.Random.Range(0, sizeY - 1);
             notPlaceable = (hunterX == preyX && hunterY == preyY) ||
                 GetTypeOfCell(hunterX, hunterY) != typeOfCell.normal ||
                 GetTypeOfCell(preyX, preyY) != typeOfCell.normal;
@@ -206,11 +207,11 @@ public abstract class World : MonoBehaviour {
     {
         for (int i = 0; i < nTraps; i++)
         {
-            int selectedLocation = Random.Range(0, sizeX * sizeY - 1);
+            int selectedLocation = UnityEngine.Random.Range(0, sizeX * sizeY - 1);
             bool notPlaceable = GetTypeOfCell(selectedLocation) != typeOfCell.normal;
             while (notPlaceable)
             {
-                selectedLocation = Random.Range(0, sizeX * sizeY - 1);
+                selectedLocation = UnityEngine.Random.Range(0, sizeX * sizeY - 1);
                 notPlaceable = GetTypeOfCell(selectedLocation) != typeOfCell.normal;
                 //Debug.Log("worldwhilenotplace2");
             }
@@ -225,7 +226,7 @@ public abstract class World : MonoBehaviour {
         int selectedLocation = 0;
         while (notPlaceable)
         {
-            selectedLocation = Random.Range(0, sizeX * sizeY - 1);
+            selectedLocation = UnityEngine.Random.Range(0, sizeX * sizeY - 1);
             notPlaceable = GetTypeOfCell(selectedLocation) != typeOfCell.normal;
         }
         for (int i = 0; i < nPlants; i++)
@@ -235,8 +236,8 @@ public abstract class World : MonoBehaviour {
             notPlaceable = true;
             while (notPlaceable)
             {
-                selectedLocationX = (selectedLocation % sizeX) - Random.Range(0, 3) + Random.Range(0, 3);
-                selectedLocationY = (selectedLocation / sizeX) - Random.Range(0, 3) + Random.Range(0, 3);
+                selectedLocationX = (selectedLocation % sizeX) - UnityEngine.Random.Range(0, 3) + UnityEngine.Random.Range(0, 3);
+                selectedLocationY = (selectedLocation / sizeX) - UnityEngine.Random.Range(0, 3) + UnityEngine.Random.Range(0, 3);
                 notPlaceable = GetTypeOfCell(selectedLocationX, selectedLocationY) != typeOfCell.normal;
             }
             SetTypeOfCell(selectedLocationX, selectedLocationY, typeOfCell.plant);
@@ -269,7 +270,7 @@ public abstract class World : MonoBehaviour {
         return cellNearby;
     }
 
-    public byte[] getState(Actor actor)
+    public List<int> getState(Actor actor)
     {
         byte[] states = new byte[3]; // 0 enemy, 2 plant, 3 trap
         for (int i = 0; i < states.Length; i++)
@@ -287,8 +288,23 @@ public abstract class World : MonoBehaviour {
         
         states[1] = detectCellNearby(actor.PosX, actor.PosY, 15, typeOfCell.plant);
         states[2] = detectCellNearby(actor.PosX, actor.PosY, 1, typeOfCell.trap);
+        List<int> ret = new List<int>();
+        int j = 0;
+        if (IsBitSet(states[0], 4)) ret.Add(j); j++; //EnemyDown
+        if (IsBitSet(states[0], 5)) ret.Add(j); j++; //EnemyUp
+        if (IsBitSet(states[0], 6)) ret.Add(j); j++; //EnemyLeft
+        if (IsBitSet(states[0], 7)) ret.Add(j); j++; //EnemyRight
 
-        return states;
+        if (IsBitSet(states[1], 4)) ret.Add(j); j++; //PlantDown
+        if (IsBitSet(states[1], 5)) ret.Add(j); j++; //PlantUp
+        if (IsBitSet(states[1], 6)) ret.Add(j); j++; //PlantLeft
+        if (IsBitSet(states[1], 7)) ret.Add(j); j++; //PlantRight
+
+        if (IsBitSet(states[2], 4)) ret.Add(j); j++; //TrapDown
+        if (IsBitSet(states[2], 5)) ret.Add(j); j++; //TrapUp
+        if (IsBitSet(states[2], 6)) ret.Add(j); j++; //TrapLeft
+        if (IsBitSet(states[2], 7)) ret.Add(j); j++; //TrapRight
+        return ret;
     }
 
     public void MoveActor(Actor actor, int offsetX, int offsetY)
@@ -346,5 +362,10 @@ public abstract class World : MonoBehaviour {
     public void setId(int id)
     {
         this.id = id;
+    }
+
+    bool IsBitSet(byte b, int pos)
+    {
+        return (b & (1 << pos)) != 0;
     }
 }

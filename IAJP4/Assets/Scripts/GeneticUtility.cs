@@ -10,35 +10,22 @@ static class GeneticUtility
 
     public static GenesEncap Crossover(Actor actor1, Actor actor2)
     {
-        GenesEncap newActor = new GenesEncap();
+        
         // Loop through genes
         System.Random r = new System.Random();
-        foreach (KeyValuePair<byte[], Dictionary<int, float>> gene in actor1.ActorGenes.Genes)
+        float[] newGenes = new float[actor1.ActorGenes.Genes.Length];
+        for (int i = 0; i < actor1.ActorGenes.Genes.Length; i++)
         {
-            if (actor2.ActorGenes.ContainsKey(gene.Key))
+            if ((float)r.NextDouble() <= 0.5f)
             {
-                if ((float)r.NextDouble() <= 0.5f)
-                {
-                    newActor.Add(gene.Key, actor1.ActorGenes.Genes[gene.Key]);
-                }
-                else
-                {
-                    newActor.Add(gene.Key, actor2.ActorGenes.Genes[gene.Key]);
-                }
-            } else
+                newGenes[i] = actor1.ActorGenes.Genes[i];
+            }
+            else
             {
-                newActor.Add(gene.Key, gene.Value);
+                newGenes[i] = actor2.ActorGenes.Genes[i];
             }
         }
-
-        foreach (KeyValuePair<byte[], Dictionary<int, float>> gene in actor2.ActorGenes.Genes)
-        {
-            if (!actor1.ActorGenes.ContainsKey(gene.Key))
-            {
-                newActor.Add(gene.Key, gene.Value);
-            }
-        }
-
+        GenesEncap newActor = new GenesEncap(newGenes);
         return newActor;
     }
 
@@ -46,33 +33,18 @@ static class GeneticUtility
     public static void mutate(GenesEncap genes)
     {
         System.Random r = new System.Random();
-        GenesEncap modified = new GenesEncap();
-
-        foreach (KeyValuePair<byte[], Dictionary<int, float>> gene in genes.Genes)
+        int sizeOfGene = genes.typeOfActor == Actor.typeofActor.hunter ? 9 : 5;
+        for (int i = 0; i < genes.Genes.Length / sizeOfGene; i++)
         {
             if ((float)r.NextDouble() <= 0.015f)
             {
-                Dictionary<int, float> newGene = new Dictionary<int, float>();
-                int choosenIndex = r.Next(gene.Value.Count);
-                for (int i = 0; i < gene.Value.Count; i++)
+                int choosenIndex = r.Next(sizeOfGene);
+                for (int j = 0; j < sizeOfGene; j++)
                 {
-                    newGene.Add(i, (i == choosenIndex ? 0.9f : 0.1f / (gene.Value.Count - 1)));
+                    genes.Genes[i * sizeOfGene + j] = (j == choosenIndex ? 0.9f : 0.1f / (sizeOfGene - 1));
                 }
-                modified.Add(gene.Key, newGene);
             }
         }
-
-        List<byte[]> keyOfModified = modified.Genes.Keys.ToList<byte[]>();
-        for (int i = 0; i < keyOfModified.Count; i++)
-        {
-            genes.Genes[keyOfModified[i]] = modified.Genes[keyOfModified[i]];
-
-        }
     }
-
-
-
-
-
 }
 

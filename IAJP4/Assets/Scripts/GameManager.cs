@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
         }
         for (int i = 0; i < numberOfWorlds; i++)
         {
-            worldPhysical = (GameObject)Instantiate(worldPrefab, worldPrefab.transform.position + new Vector3((i / (numberOfWorlds/10)) * 230, (i % (numberOfWorlds / 10)) * 230, 0)
+            worldPhysical = (GameObject)Instantiate(worldPrefab, worldPrefab.transform.position + new Vector3((i / (numberOfWorlds/2)) * 230, (i % (numberOfWorlds / 2)) * 230, 0)
                 , worldPrefab.transform.rotation);
             worldPhysical.transform.parent = this.transform;
             worldPhysical.transform.name = "WorldNumber_" + i;

@@ -6,9 +6,10 @@ using System.Text;
 
 public class GenesEncap
 {
-    Dictionary<byte[], Dictionary<int, float>> genes;
+    float[] genes;
+    public Actor.typeofActor typeOfActor;
 
-    public Dictionary<byte[], Dictionary<int, float>> Genes
+    public float[] Genes
     {
         get
         {
@@ -21,41 +22,40 @@ public class GenesEncap
         }
     }
 
-    public bool ContainsKey(byte[] key) { return genes.ContainsKey(key); }
-
-    public GenesEncap()
+    public GenesEncap(Actor.typeofActor type)
     {
-        genes = new Dictionary<byte[], Dictionary<int, float>>(new BaComp());
+        if(type == Actor.typeofActor.hunter)
+            genes = new float[108];
+        else genes = new float[60];
+        this.typeOfActor = type;
+        randomizeGene();
     }
 
-    public GenesEncap(Dictionary<byte[], Dictionary<int, float>> genes)
+    public GenesEncap(float[] genes)
     {
-        this.genes = genes;
+        this.genes = (float[])genes.Clone();
+        this.typeOfActor = (genes.Length == 108 ? Actor.typeofActor.hunter : Actor.typeofActor.prey);
+        randomizeGene();
     }
 
-    public void Add(byte[] byteState, Dictionary<int, float> dic) {
-        if (genes.ContainsKey(byteState)) genes[byteState] = dic;
-        else genes.Add(byteState, dic);
+    private void randomizeGene()
+    {
+        System.Random r = new System.Random();
+        int sizeOfGene = (typeOfActor == Actor.typeofActor.hunter ? 9 : 5);
+        for (int i = 0; i < genes.Length / sizeOfGene; i++)
+        {
+            int choosenIndex = r.Next(sizeOfGene);
+            for (int j = 0; j < sizeOfGene; j++)
+            {
+                genes[i * sizeOfGene + j] = (j == choosenIndex ? 0.9f : 0.1f / (sizeOfGene - 1));
+            }
+        }
     }
-
-    public void Remove(byte[] byteState) { genes.Remove(byteState); }
-
     public override string ToString()
     {
         string ret = "";
-        List<byte[]> keys = new List<byte[]>(Genes.Keys);
-        List<KeyValuePair<int, float>> actions;
-        for (int i = 0; i < keys.Count; i++)
-        {
-            byte[] geneState = keys[i];
-            ret += ByteArrayToString(geneState) + ":";
-            actions = Genes[geneState].ToList();
-            for (int j = 0; j < actions.Count; j++)
-            {
-                ret += "" + actions[j].Key + "," + actions[j].Value + ";";
-            }
-            ret += "\n";
-        }
+        for (int i = 0; i < genes.Length; i++)
+            ret += genes[i] + ";";
         return ret;
     }
 
@@ -63,6 +63,26 @@ public class GenesEncap
     {
         string hex = BitConverter.ToString(ba);
         return hex.Replace("-", "");
+    }
+
+    public float[] getGeneFromState(List<int> state)
+    {
+        float[] probSum;
+        int sizeOfGene = (typeOfActor == Actor.typeofActor.hunter ? 9 : 5);
+        probSum = new float[sizeOfGene];
+        for (int i = 0; i < probSum.Length; i++)
+        {
+            probSum[i] = 0.0f;
+        }
+
+        for (int i = 0; i < state.Count; i++)
+        {
+            float[] stateGene = new float[sizeOfGene];
+            Array.Copy(genes, state[i] * sizeOfGene, stateGene, 0, sizeOfGene);
+            probSum = probSum.Select((x, index) => x + stateGene[index]).ToArray();
+        }
+        probSum = probSum.Select(d => d / (float)state.Count).ToArray();
+        return probSum;
     }
 }
 

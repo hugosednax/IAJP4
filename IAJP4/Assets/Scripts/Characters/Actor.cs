@@ -31,7 +31,7 @@ public abstract class Actor {
         this.PosX = posX;
         this.PosY = posY;
         this.type = type;
-        ActorGenes = new GenesEncap();
+        ActorGenes = new GenesEncap(this.type);
         this.world = world;
         //percisa de valores randomizados
     }
@@ -45,40 +45,6 @@ public abstract class Actor {
         this.world = world;
     }
 
-    public Dictionary<int, float> getGeneFromState(byte[] state)
-    {
-        Dictionary<int, float> gene;
-
-        if (ActorGenes.Genes.ContainsKey(state))
-        {
-            gene = ActorGenes.Genes[state];
-        }
-        else
-        {
-            gene = new Dictionary<int, float>();
-            System.Random r = new System.Random();
-            float cumProb = 0.0f;
-            int indexChoosen = r.Next(Actions.Count);
-            for (int i = 0; i < Actions.Count; i++)
-            {
-                float newProb = (i == indexChoosen ? 0.9f : 0.1f / (Actions.Count - 1));
-                /*if (newProb <= 0.1)
-                    newProb = (float)r.NextDouble() * 5.0f;
-                else newProb = (float)r.NextDouble();*/
-                //if(i==indexChoosen) newProb = Actions.Count
-                //cumProb += newProb;
-                gene.Add(Actions[i], newProb);
-            }
-            
-            /*for (int i = 0; i < Actions.Count; i++)
-            {
-                gene[Actions[i]] = gene[Actions[i]] / cumProb;
-            }*/
-            ActorGenes.Add(state, gene);
-        }
-        return gene;
-    }
-
     public void Death()
     {
         if (world.isGeneticWorld)
@@ -88,7 +54,7 @@ public abstract class Actor {
             if (type == typeofActor.prey)
                 ((GeneticWorld)world).manager.summaryPrinter.NumberOfWinsByHunter++;
         }
-        Energy = -999;
+        Energy -= 999;
     }
 
     public abstract void HandleCollision(typeOfCell typeOfCell);
@@ -99,9 +65,9 @@ public abstract class Actor {
     {
         bool isValid = false;
         //Actor.state state = chooseState(actor);
-        byte[] state = world.getState(this);
+        List<int> state = world.getState(this);
 
-        Dictionary<int, float> gene = getGeneFromState(state);
+        float[] gene = ActorGenes.getGeneFromState(state);
 
         System.Random r = new System.Random();
 
@@ -112,8 +78,7 @@ public abstract class Actor {
             float cumulative = 0.0f;
             for (int i = 0; i < Actions.Count; i++)
             {
-                if (gene.ContainsKey(Actions[i]))
-                    cumulative += gene[Actions[i]];
+                cumulative += gene[Actions[i]];
                 if (diceRoll < cumulative)
                 {
                     isValid = ActionManager.CanExecute(Actions[i], this, world);
