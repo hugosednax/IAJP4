@@ -244,7 +244,7 @@ public abstract class World : MonoBehaviour {
     }
     #endregion
 
-    byte detectCellNearby(int x, int y, int distance, typeOfCell typeToDetect)
+    public virtual byte detectCellNearby(int x, int y, int distance, typeOfCell typeToDetect)
     {
         byte cellNearby = 0x00;
 
@@ -262,35 +262,7 @@ public abstract class World : MonoBehaviour {
                         cellNearby |= 0x04;
                     if (j < 0)
                         cellNearby |= 0x08;
-                    /*
-                    if (manager.logSummaryInfo)
-                    {
-                        if (typeToDetect == typeOfCell.trap)
-                        {
-                            manager.summaryPrinter.NumberOfPlantsDetected++;
-                            if (GetTypeOfCell(x,y) == typeOfCell.hunter)
-                            {
-                                manager.summaryPrinter.NumberOfPlantsDetectedByHunter++;
-                            }
-                            else if (GetTypeOfCell(x, y) == typeOfCell.prey)
-                            {
-                                manager.summaryPrinter.NumberOfPlantsDetectedByPrey++;
-
-                            }
-                        }
-                        if (typeToDetect == typeOfCell.trap)
-                        {
-                            manager.summaryPrinter.NumberOfTrapsDetected++;
-                            if (GetTypeOfCell(x, y) == typeOfCell.hunter)
-                            {
-                                manager.summaryPrinter.NumberOfTrapsDetectedByHunter++;
-                            }
-                            else if (GetTypeOfCell(x, y) == typeOfCell.prey)
-                            {
-                                manager.summaryPrinter.NumberOfTrapsDetectedByPrey++;
-                            }
-                        }
-                    }*/
+                    
                 }
             }
         }

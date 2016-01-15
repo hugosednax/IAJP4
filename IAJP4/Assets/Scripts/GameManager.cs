@@ -65,6 +65,10 @@ public class GameManager : MonoBehaviour
         {
             //Debug.Log("Resetting all");
             Pair<List<GenesEncap>, List<GenesEncap>> pairOfResults = StartNewGen();
+
+            if (generations % 10 == 0)
+                summaryPrinter.SummarizeGeneration("generation" + generations);
+            summaryPrinter.ResetVariables();
             for (int i = 0; i < numberOfWorlds; i++)
             {
                 worlds[i].ResetWorld(pairOfResults.First[i], pairOfResults.Second[i]);
@@ -73,10 +77,6 @@ public class GameManager : MonoBehaviour
             {
                 finishedSamples[i] = false;
             }
-
-            if (generations % 10 == 0)
-                summaryPrinter.SummarizeGeneration("generation" + generations);
-            summaryPrinter.ResetVariables();
 
             generations++;
         }

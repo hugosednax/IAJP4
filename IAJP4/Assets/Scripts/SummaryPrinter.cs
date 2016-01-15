@@ -46,7 +46,7 @@ public class SummaryPrinter
     public string SummarizeResults()
     {
         return "Out of " + SampleNumber + " samples, " + NumberOfWinsByHunter + " were won by a hunter and " +
-               NumberOfWinsByPrey + "were won by a prey."+NumberOfPreysEaten +" is the number of times hunters ate the prey";
+               NumberOfWinsByPrey + " were won by a prey. "+NumberOfPreysEaten +" is the number of times hunters ate the prey";
     }
 
     public void ResetVariables()
