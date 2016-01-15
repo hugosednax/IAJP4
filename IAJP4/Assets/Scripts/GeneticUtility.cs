@@ -12,12 +12,11 @@ static class GeneticUtility
     {
         
         // Loop through genes
-        System.Random r = new System.Random();
         int[] newGenes = new int[actor1.ActorGenes.Genes.Length];
         Array.Clear(newGenes, 0, newGenes.Length);
         for (int i = 0; i < actor1.ActorGenes.Genes.Length; i++)
         {
-            if ((float)r.NextDouble() <= 0.5f)
+            if (UnityEngine.Random.Range(0.0f, 1.0f) <= 0.5f)
             {
                 newGenes[i] = actor1.ActorGenes.Genes[i];
             }
@@ -27,7 +26,7 @@ static class GeneticUtility
             }
         }
         GenesEncap newActor = new GenesEncap(newGenes, actor1.Actions.Count);
-        Debug.Log("Crossover: " + geneToStr(actor1.ActorGenes) + " with " + geneToStr(actor2.ActorGenes) + " = " + geneToStr(newActor));
+        //Debug.Log("Crossover: " + geneToStr(actor1.ActorGenes) + " with " + geneToStr(actor2.ActorGenes) + " = " + geneToStr(newActor));
         return newActor;
     }
 
@@ -43,12 +42,11 @@ static class GeneticUtility
 
     public static void mutate(GenesEncap genes)
     {
-        System.Random r = new System.Random();
         for (int i = 0; i < genes.Genes.Length; i++)
         {
-            if ((float)r.NextDouble() <= 0.1f)
+            if (UnityEngine.Random.Range(0.0f, 1.0f) <= 0.1f)
             {
-                genes.Genes[i] = r.Next(genes.numActions);
+                genes.Genes[i] = UnityEngine.Random.Range(0, genes.numActions);
             }
         }
     }

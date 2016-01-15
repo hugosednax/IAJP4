@@ -6,7 +6,7 @@ using System.Linq;
 
 public abstract class Actor {
 
-    [SerializeField]protected int energy = 100;
+    [SerializeField]protected int energy = 300;
     protected World world;
     public int Energy {
         get { return energy; }
@@ -77,12 +77,11 @@ public abstract class Actor {
             geneStr += gene[i] + " ; ";
         }
         Debug.Log(geneStr);*/
-        System.Random r = new System.Random();
         int counter = 0;
         while (!isValid && counter < 4)
         {
             counter++;
-            float diceRoll = (float)r.NextDouble();
+            float diceRoll = UnityEngine.Random.Range(0.0f, 1.0f);
             float cumulative = 0.0f;
             for (int i = 0; i < Actions.Count; i++)
             {

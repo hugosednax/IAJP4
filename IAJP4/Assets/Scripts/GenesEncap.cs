@@ -28,6 +28,12 @@ public class GenesEncap
         genes = new int[12];
         this.numActions = numActions;
         randomizeGene();
+        /*string gene = "Gene: ";
+        for (int i = 0; i < genes.Length; i++)
+        {
+            gene += genes[i];
+        }
+        Debug.Log(gene);*/
     }
 
     public GenesEncap(int[] genes, int numActions)
@@ -39,10 +45,9 @@ public class GenesEncap
 
     private void randomizeGene()
     {
-        System.Random r = new System.Random();
         for (int i = 0; i < genes.Length; i++)
         {
-            genes[i] = r.Next(numActions);
+            genes[i] = UnityEngine.Random.Range(0, numActions);
         }
     }
     public override string ToString()
